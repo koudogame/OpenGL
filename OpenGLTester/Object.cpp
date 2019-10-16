@@ -15,22 +15,28 @@ GLboolean Object::createVertexData(std::string ObjectName)
 	glGenVertexArrays(1, &vao_);
 	glBindVertexArray(vao_);
 	//バッファの作成
-	glGenBuffers(1, &vertex_buffer_);
-	glBufferData(GL_ARRAY_BUFFER, vertex_data_.size() * sizeof(VertexData), vertex_data_.data(), GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
+	glGenBuffers(2, buffer_);
+
 	//関連付け
-	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer_[0]);
+	glBufferData(GL_ARRAY_BUFFER, vertex_data_.size() * sizeof(VertexData), vertex_data_.data(), GL_STATIC_DRAW);
+
+	GLsizei size;
+	glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
+
+	//頂点情報
+	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (GLbyte*)(0));
+	//UV情報
+	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), (GLbyte*)(sizeof(VertexData::position)));
+	//法線情報
+	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (GLbyte*)(sizeof(VertexData::position) + sizeof(VertexData::texcode)));
 
 	//インデックス情報を関連付ける
-	glGenBuffers(1, &index_buffer_);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer_);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_[1]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_data_.size() * sizeof(GLuint), index_data_.data(), GL_STATIC_DRAW);
-
 	return true;
 }
 
@@ -70,8 +76,7 @@ Object::~Object()
 	//頂点配列オブジェクトを削除する
 	glDeleteBuffers(1, &vao_);
 	//頂点バッファオブジェクトを削除する
-	glDeleteBuffers(1, &vertex_buffer_);
-	glDeleteBuffers(1, &index_buffer_);
+	glDeleteBuffers(2,buffer_);
 
 	//テクスチャの設定解除
 	glDisable(GL_TEXTURE_2D);
@@ -80,18 +85,18 @@ Object::~Object()
 
 void Object::draw() const
 {
-	////透過設定
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	////テクスチャマッピングを有効にする
-	//glEnable(GL_TEXTURE_2D);
-	////使用テクスチャの設定
-	//glBindTexture(GL_TEXTURE_2D, texture_id_);
+	//透過設定
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//テクスチャマッピングを有効にする
+	glEnable(GL_TEXTURE_2D);
+	//使用テクスチャの設定
+	glBindTexture(GL_TEXTURE_2D, texture_id_);
 
 	//描画する頂点配列オブジェクトを指定する
 	glBindVertexArray(vao_);
 	//図形の描画
-	glDrawElements(GL_TRIANGLES, index_data_.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_LINE_LOOP, index_data_.size(), GL_UNSIGNED_INT, nullptr);
 }
 
 GLboolean Object::loadObject(std::string ObjectName)

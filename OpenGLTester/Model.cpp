@@ -18,8 +18,9 @@ bool Model::init()
 	if (program_ == 0)
 		return false;
 	object_ = std::make_unique<Object>();
-	if (object_.get() == nullptr || !object_->createVertexData("Dice.obj"))
+	if (object_.get() == nullptr || !object_->createVertexData("box.obj"))
 		return false;
+	object_->loadTexture("checker.png");
 	return true;
 }
 
@@ -27,7 +28,7 @@ void Model::draw()
 {
 	glUseProgram(program_);
 
-	//glUniform1i(textrue_location_, 0);
+	glUniform1i(textrue_location_, 0);
 
 	object_->draw();
 }

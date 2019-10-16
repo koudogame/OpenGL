@@ -54,5 +54,6 @@ void Window::swapWindow()
 	glfwSwapBuffers(window_);
 
 	//イベントの取り出し
-	glfwPollEvents();
+	glfwWaitEvents();
+	//glfwPollEvents();
 }

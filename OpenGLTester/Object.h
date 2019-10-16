@@ -26,8 +26,7 @@ public:
 private:
 	GLuint vao_;
 	GLuint texture_id_;
-	GLuint vertex_buffer_;
-	GLuint index_buffer_;
+	GLuint buffer_[2];
 
 	//’¸“_î•ñ
 	std::vector<VertexData> vertex_data_;
