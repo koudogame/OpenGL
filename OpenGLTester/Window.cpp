@@ -33,6 +33,14 @@ bool Window::init()
 	//クリアカラーの選択
 	glClearColor(1.0F, 1.0F, 1.0F, 1.0F);
 
+	//背面カリングを有効にする
+	glFrontFace(GL_CCW);
+	glCullFace(GL_BACK);
+	glEnable(GL_CULL_FACE);
+
+	//Zバッファを有効にする
+	glEnable(GL_DEPTH_TEST);
+
 	return true;
 }
 
@@ -45,7 +53,7 @@ bool Window::isCloseWindow()
 void Window::clearWindow()
 {
 	//画面クリア
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 }
 
 void Window::swapWindow()
@@ -54,6 +62,6 @@ void Window::swapWindow()
 	glfwSwapBuffers(window_);
 
 	//イベントの取り出し
-	glfwWaitEvents();
-	//glfwPollEvents();
+	//glfwWaitEvents();
+	glfwPollEvents();
 }

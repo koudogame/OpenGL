@@ -8,14 +8,18 @@ public:
 
 public:
 	bool init();
+	void updata();
 	void draw();
 
 private:
 	std::unique_ptr<Object> object_;
-	GLuint vertex_count_;
+	glm::mat4 position_;
 	GLuint program_;
 
 	GLuint textrue_location_;
+	GLuint view_location_;
+	GLuint projection_location_;
+	GLuint position_location_;
 
 	template<typename T>
 	struct VertexData

@@ -96,7 +96,7 @@ void Object::draw() const
 	//描画する頂点配列オブジェクトを指定する
 	glBindVertexArray(vao_);
 	//図形の描画
-	glDrawElements(GL_LINE_LOOP, index_data_.size(), GL_UNSIGNED_INT, nullptr);
+	glDrawElements(GL_TRIANGLES, index_data_.size(), GL_UNSIGNED_INT, nullptr);
 }
 
 GLboolean Object::loadObject(std::string ObjectName)
@@ -129,6 +129,7 @@ GLboolean Object::loadObject(std::string ObjectName)
 		{
 			glm::vec2 vector;
 			sscanf_s(line.c_str(), "vt %f %f", &vector.s, &vector.t);
+			vector.y = 1.0F - vector.y;
 			uv.push_back(vector);
 		}
 		else if (!std::strcmp(keyword, "vn"))
