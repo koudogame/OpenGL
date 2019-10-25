@@ -34,9 +34,9 @@ GLboolean Object::createVertexData(std::string ObjectName)
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (GLbyte*)(sizeof(VertexData::position) + sizeof(VertexData::texcode)));
 
-	//インデックス情報を関連付ける
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_[1]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_data_.size() * sizeof(GLuint), index_data_.data(), GL_STATIC_DRAW);
+	////インデックス情報を関連付ける
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_[1]);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_data_.size() * sizeof(GLuint), index_data_.data(), GL_STATIC_DRAW);
 	return true;
 }
 
@@ -95,8 +95,11 @@ void Object::draw() const
 
 	//描画する頂点配列オブジェクトを指定する
 	glBindVertexArray(vao_);
-	//図形の描画
-	glDrawElements(GL_TRIANGLES, index_data_.size(), GL_UNSIGNED_INT, nullptr);
+	for (auto itr : index_data_)
+	{
+		//図形の描画
+		glDrawElements(GL_TRIANGLES, itr.second.size(), GL_UNSIGNED_INT, itr.second.data());
+	}
 }
 
 GLboolean Object::loadObject(std::string ObjectName)
@@ -105,7 +108,8 @@ GLboolean Object::loadObject(std::string ObjectName)
 	std::vector<glm::vec3> vertex;
 	std::vector<glm::vec2> uv;
 	std::vector<glm::vec3> nomal;
-	std::vector<std::string> word;
+	std::string mtl_id;
+	std::unordered_map<std::string,std::vector<std::string>> word;
 
 	if (file.fail())
 		return false;
@@ -138,6 +142,12 @@ GLboolean Object::loadObject(std::string ObjectName)
 			sscanf_s(line.c_str(), "vn %f %f %f", &vector.x, &vector.y, &vector.z);
 			nomal.push_back(vector);
 		}
+		else if (!std::strcmp(keyword, "usemtl"))
+		{
+			char str[_MAX_PATH] = {};
+			sscanf_s(line.c_str(), "usemtl %s", str, _MAX_PATH);
+			mtl_id = str;
+		}
 		else if (!std::strcmp(keyword, "f"))
 		{
 			char block[3][_MAX_PATH] = {};
@@ -145,7 +155,7 @@ GLboolean Object::loadObject(std::string ObjectName)
 			sscanf_s(line.c_str(), "f %s %s %s", &block[0], sizeof(block[0]), &block[1], sizeof(block[1]), &block[2], sizeof(block[2]));
 			for (auto& itr : block)
 			{
-				word.push_back(itr);
+				word[mtl_id].push_back(itr);
 			}
 		}
 	}
@@ -168,17 +178,73 @@ GLboolean Object::loadObject(std::string ObjectName)
 	};
 
 	//index情報と対応の頂点情報に仕分ける
-	for (auto& itr : word)
+	for (auto mtl : word)
 	{
-		auto check = index_dictionary.find(itr);
-
-		if (check == index_dictionary.end())
+		for (auto& itr : mtl.second)
 		{
-			check = index_dictionary.insert(std::make_pair(itr, index_num++)).first;
-			pull_data(check->first);
-		}
-			index_data_.push_back(check->second);
+			auto check = index_dictionary.find(itr);
 
+			if (check == index_dictionary.end())
+			{
+				check = index_dictionary.insert(std::make_pair(itr, index_num++)).first;
+				pull_data(check->first);
+			}
+			index_data_[mtl.first].push_back(check->second);
+		}
 	}
 	return true;
+}
+
+
+GLboolean Object::createMatrialData(std::string ObjectMatrialName)
+{
+	std::ifstream file(ObjectMatrialName);
+
+	if (file.fail())
+	{
+		file.close();
+		return false;
+	}
+
+	std::string mtl_id;
+
+	//データの読み込み
+	while (!file.eof())
+	{
+		std::string line;
+		std::getline(file, line);
+
+		//キーワードの抜き出し
+		char keyword[_MAX_PATH] = {};
+		sscanf_s(line.c_str(), "%s", keyword, _MAX_PATH);
+
+		if (!std::strcmp(keyword, "newmtl"))
+		{
+			char str[_MAX_PATH] = {};
+			sscanf_s(line.c_str(), "newmtl %s", str, _MAX_PATH);
+			mtl_id = str;
+		}
+		else if (!std::strcmp(keyword, "Kd"))
+		{
+			glm::vec3 input_num;
+			sscanf_s(line.c_str(), "Kd %f %f %f", &input_num.x, sizeof(GLfloat), &input_num.y, sizeof(GLfloat), &input_num.z, sizeof(GLfloat));
+			matrial_data_[mtl_id].diffuse = input_num;
+		}
+		else if (!std::strcmp(keyword, "Ka"))
+		{
+			glm::vec3 input_num;
+			sscanf_s(line.c_str(), "Kd %f %f %f", &input_num.x, sizeof(GLfloat), &input_num.y, sizeof(GLfloat), &input_num.z, sizeof(GLfloat));
+			matrial_data_[mtl_id].diffuse = input_num;
+		}
+		else if (!std::strcmp(keyword, "Ks"))
+		{
+			glm::vec3 input_num;
+			sscanf_s(line.c_str(), "Kd %f %f %f", &input_num.x, sizeof(GLfloat), &input_num.y, sizeof(GLfloat), &input_num.z, sizeof(GLfloat));
+			matrial_data_[mtl_id].diffuse = input_num;
+		}
+
+	}
+
+
+	return GLboolean();
 }

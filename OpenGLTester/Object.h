@@ -7,6 +7,13 @@ struct VertexData
 	glm::vec3 nomal;
 };
 
+struct Matrial
+{
+	glm::vec3 diffuse;
+	glm::vec3 specular;
+	glm::vec3 anbient;
+};
+
 class Object
 {
 public:
@@ -19,7 +26,7 @@ private:
 
 public:
 	GLboolean createVertexData(std::string ObjectName);
-
+	GLboolean createMatrialData(std::string ObjectMatrialName);
 	void loadTexture(const std::string &TextureName);
 	void draw()const;
 
@@ -30,7 +37,8 @@ private:
 
 	//’¸“_î•ñ
 	std::vector<VertexData> vertex_data_;
-	std::vector<GLuint> index_data_;
+	std::unordered_map<std::string,std::vector<GLuint>> index_data_;
+	std::unordered_map<std::string, Matrial> matrial_data_;
 
 private:
 	GLboolean loadObject(std::string ObjectName);

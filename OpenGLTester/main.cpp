@@ -29,11 +29,11 @@ int main()
 		return 0;
 
 
-	glm::vec3 eye = { 2.0F,2.0F,10.0F };
+	glm::vec3 eye = { 2.0F,2.0F,100.0F };
 	glm::vec3 target = { 0.0F,0.0F,0.0F };
 	glm::vec3 up = { 0.0F,1.0F,0.0F };
 	Camera::Get()->setView(eye, target, up);
-	Camera::Get()->setProjection(glm::radians(30.0F), 1280.0F / 720.0F, 0.1F, 100.0F);
+	Camera::Get()->setProjection(glm::radians(30.0F), 1280.0F / 720.0F, 0.1F, 1000.0F);
 
 	while (window.isCloseWindow())
 	{
