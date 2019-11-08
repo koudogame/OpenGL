@@ -13,16 +13,17 @@ Model::~Model()
 
 
 
-bool Model::init()
+bool Model::init(std::string ModelName, std::string TextureName)
 {
 	program_ = Shader::Get()->loadProgram("point.vert", "point.frag");
 	if (program_ == 0)
 		return false;
 	object_ = std::make_unique<Object>();
-	if (object_.get() == nullptr || !object_->createVertexData("Desk.obj"))
+	if (object_.get() == nullptr || !object_->createVertexData(ModelName))
 		return false;
 	obb_.length = object_.get()->getMaxLength();
-	object_->loadTexture("Dice.png");
+	if (TextureName != "")
+		object_->loadTexture(TextureName);
 	textrue_location_ = getUniformLocation("tex");
 	view_model_location_ = getUniformLocation("model_view");
 	projection_location_ = getUniformLocation("projection");
@@ -37,22 +38,19 @@ bool Model::init()
 	return true;
 }
 
-void Model::updata()
+void Model::setPosition(const glm::mat4 & Position)
 {
-	static float angle = 0;
-	glm::mat4 position(1.0F);
-	position *= glm::rotate(glm::radians(++angle), glm::vec3(0.0F, 1.0F, 0.0F));
-
-	glUseProgram(program_);
-
+	position_ = Position;
 	for (int i = 0; i < 3; ++i)
-		obb_.direction[i] = glm::transpose(position)[i];
+		obb_.direction[i] = glm::transpose(Position)[i];
+}
 
-	glm::mat4 view = Camera::Get()->getView();
-	glm::mat4 view_model(view * position);
+void Model::SendSheder()
+{
+	glUseProgram(program_);
+	glm::mat4 view_model = Camera::Get()->getView() * position_;
 	//–@ü‚ðC³‚·‚é‚½‚ß‚Ì‹t“]’us—ñ‚Ìì¬
 	glm::mat3 nomal_matrix = glm::transpose(glm::inverse(view_model));
-
 	//Vertex Shader Uniform
 	glUniformMatrix4fv(view_model_location_, 1, GL_FALSE, &view_model[0][0]);
 	glUniformMatrix4fv(projection_location_, 1, GL_FALSE, &Camera::Get()->getProjection()[0][0]);

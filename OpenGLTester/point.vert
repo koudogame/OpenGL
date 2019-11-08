@@ -2,19 +2,20 @@
 layout (location = 0) in vec3 vertex_position;
 layout (location = 1) in vec2 texcode;
 layout (location = 2) in vec3 nomal;
-layout (location = 3) in vec3 kDiffuse;
-layout (location = 4) in vec3 kSpeclar;
-layout (location = 5) in vec3 kAnbient;
 
 uniform mat4 model_view;
 uniform mat4 projection;
 uniform mat3 nomal_matrix;
 
 const vec4 LightPosition = vec4(0.0,0.0,10.0,1.0);
-const vec3 LightColor = vec3(1,0.52,0);
+const vec3 LightColor = vec3(0.5,0.5,0.5);
 const float Intensity = 6.08;
 const vec3 LDiffuse = vec3(1.0);
 const vec3 LSpecular = vec3(1.0);
+
+const vec3 kDiffuse = vec3(1.0);
+const vec3 kSpeclar = vec3(1.0);
+const vec3 kAnbient = vec3(0.8);
 
 const float kShine = 30.0;
 
@@ -33,7 +34,7 @@ void main()
 //Specular Light setup
  vec3 view_vector = -normalize(object_position.xyz);
  vec3 refrect_vector = reflect(-light,object_nomal);
- ISpecular = pow(max(dot(refrect_vector,view_vector),0.0),kShine) * LSpecular + kAnbient;
+ ISpecular = pow(max(dot(refrect_vector,view_vector),0.0),kShine) * kSpeclar * LSpecular + kAnbient;
  LColor = LightColor * Intensity;
 
  gl_Position = projection * object_position;

@@ -36,7 +36,7 @@ bool Collision::OBBtoOBB(const OBB & Obj1, const OBB & Obj2)
 		//xyz
 		for (int k = 0; k < 3; ++k)
 		{
-			GLfloat ra = direction_vector[1][i][k].length();
+			GLfloat ra = glm::abs(glm::dot(direction_vector[1][i][k], direction_vector[0][i][k]));
 			GLfloat rb = lenSegOnSparateAxis(&direction_vector[0][i][k], &direction_vector[1][i ? 0 : 1][0], &direction_vector[1][i ? 0 : 1][1], &direction_vector[1][i ? 0 : 1][2]);
 			GLfloat length = glm::abs(glm::dot(interval, direction_vector[0][i][k]));
 			if (length > ra + rb)
