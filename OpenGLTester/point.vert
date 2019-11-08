@@ -8,14 +8,14 @@ uniform mat4 projection;
 uniform mat3 nomal_matrix;
 
 const vec4 LightPosition = vec4(0.0,0.0,10.0,1.0);
-const vec3 LightColor = vec3(0.5,0.5,0.5);
-const float Intensity = 6.08;
+const vec3 LightColor = vec3(1.0);
+const float Intensity = 1.0;
 const vec3 LDiffuse = vec3(1.0);
 const vec3 LSpecular = vec3(1.0);
 
 const vec3 kDiffuse = vec3(1.0);
-const vec3 kSpeclar = vec3(1.0);
-const vec3 kAnbient = vec3(0.8);
+const vec3 kSpeclar = vec3(0.0);
+const vec3 kAnbient = vec3(0.3);
 
 const float kShine = 30.0;
 

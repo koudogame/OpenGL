@@ -18,7 +18,6 @@ public:
 public:
 	bool init(std::string ModelName, std::string TextureName = "");
 	void setPosition(const glm::mat4& Position);
-	void SendSheder();
 	void draw();
 
 private:
@@ -34,5 +33,6 @@ private:
 	glm::mat4 position_;
 
 private:
+	void SendSheder();
 	GLuint getUniformLocation(std::string VariableName);
 };

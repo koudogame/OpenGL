@@ -12,7 +12,6 @@ Model::~Model()
 }
 
 
-
 bool Model::init(std::string ModelName, std::string TextureName)
 {
 	program_ = Shader::Get()->loadProgram("point.vert", "point.frag");
@@ -59,6 +58,7 @@ void Model::SendSheder()
 
 void Model::draw()
 {
+	SendSheder();
 	glUseProgram(program_);
 	//Fragment Shader Uniform
 	glUniform1i(textrue_location_, 0);

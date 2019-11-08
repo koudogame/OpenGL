@@ -107,7 +107,7 @@ GLboolean Object::loadObject(std::string ObjectName)
 	std::vector<glm::vec3> nomal;
 	std::string mtl_id;
 	std::unordered_map<std::string,std::vector<std::string>> word;
-
+	max_length_ = glm::vec3(0.0F);
 	if (file.fail())
 		return false;
 
@@ -136,7 +136,7 @@ GLboolean Object::loadObject(std::string ObjectName)
 		{
 			glm::vec2 vector;
 			sscanf_s(line.c_str(), "vt %f %f", &vector.s, &vector.t);
-			vector.y = 1.0F - vector.y;
+			vector.t = 1.0F - vector.t;
 			uv.push_back(vector);
 		}
 		else if (!std::strcmp(keyword, "vn"))
