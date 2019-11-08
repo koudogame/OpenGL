@@ -21,6 +21,7 @@ bool Model::init()
 	object_ = std::make_unique<Object>();
 	if (object_.get() == nullptr || !object_->createVertexData("Desk.obj"))
 		return false;
+	obb_.length = object_.get()->getMaxLength();
 	object_->loadTexture("Dice.png");
 	textrue_location_ = getUniformLocation("tex");
 	view_model_location_ = getUniformLocation("model_view");
@@ -42,13 +43,13 @@ void Model::updata()
 	glm::mat4 position(1.0F);
 	position *= glm::rotate(glm::radians(++angle), glm::vec3(0.0F, 1.0F, 0.0F));
 
-
 	glUseProgram(program_);
 
+	for (int i = 0; i < 3; ++i)
+		obb_.direction[i] = position[i];
+
 	glm::mat4 view = Camera::Get()->getView();
-
 	glm::mat4 view_model(view * position);
-
 	//ñ@ê¸ÇèCê≥Ç∑ÇÈÇΩÇﬂÇÃãtì]íuçsóÒÇÃçÏê¨
 	glm::mat3 nomal_matrix = glm::transpose(glm::inverse(view_model));
 

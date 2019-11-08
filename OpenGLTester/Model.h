@@ -1,5 +1,14 @@
 #pragma once
 #include "Object.h"
+
+struct OBB
+{
+	glm::vec3 position = glm::vec3(0.0);//行列の座標成分
+
+	glm::vec3 direction[3] = {};	//各オブジェクトが持つworld行列の回転成分
+	glm::vec3 length = glm::vec3(0.0);
+};
+
 class Model
 {
 public:
@@ -20,27 +29,8 @@ private:
 	GLuint projection_location_;
 	GLuint nomal_location_;
 
-	template<typename T>
-	struct VertexData
-	{
-		GLuint location;
-		std::vector<T> vertex;
-		GLint size;
-
-		VertexData(GLuint Location, std::vector<T>& Vertex, GLint Size)
-		{
-			location = Location;
-			vertex.resize(Vertex.size());
-			vertex.swap(Vertex);
-			size = Size;
-		}
-	};
-
-	std::vector<VertexData<GLfloat>> vertex_data_;
-	std::vector<VertexData<GLint>> index_data_;
+	OBB obb_;
 
 private:
 	GLuint getUniformLocation(std::string VariableName);
-	void loadVertexData(std::string ObjectName);
 };
-

@@ -15,10 +15,10 @@ GLboolean Object::createVertexData(std::string ObjectName)
 	glGenVertexArrays(1, &vao_);
 	glBindVertexArray(vao_);
 	//バッファの作成
-	glGenBuffers(2, buffer_);
+	glGenBuffers(1, &buffer_);
 
 	//関連付け
-	glBindBuffer(GL_ARRAY_BUFFER, buffer_[0]);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer_);
 	glBufferData(GL_ARRAY_BUFFER, vertex_data_.size() * sizeof(VertexData), vertex_data_.data(), GL_STATIC_DRAW);
 
 	GLsizei size;
@@ -34,9 +34,6 @@ GLboolean Object::createVertexData(std::string ObjectName)
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (GLbyte*)(sizeof(VertexData::position) + sizeof(VertexData::texcode)));
 
-	////インデックス情報を関連付ける
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_[1]);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_data_.size() * sizeof(GLuint), index_data_.data(), GL_STATIC_DRAW);
 	return true;
 }
 
@@ -76,7 +73,7 @@ Object::~Object()
 	//頂点配列オブジェクトを削除する
 	glDeleteBuffers(1, &vao_);
 	//頂点バッファオブジェクトを削除する
-	glDeleteBuffers(2,buffer_);
+	glDeleteBuffers(1,&buffer_);
 
 	//テクスチャの設定解除
 	glDisable(GL_TEXTURE_2D);
@@ -127,6 +124,12 @@ GLboolean Object::loadObject(std::string ObjectName)
 		{
 			glm::vec3 vector;
 			sscanf_s(line.c_str(), "v %f %f %f", &vector.x, &vector.y, &vector.z);
+			if (max_length_.x < vector.x)
+				max_length_.x = vector.x;
+			if (max_length_.y < vector.y)
+				max_length_.y = vector.y;
+			if (max_length_.z < vector.z)
+				max_length_.z = vector.z;
 			vertex.push_back(vector);
 		}
 		else if (!std::strcmp(keyword, "vt"))
@@ -227,24 +230,23 @@ GLboolean Object::createMatrialData(std::string ObjectMatrialName)
 		else if (!std::strcmp(keyword, "Kd"))
 		{
 			glm::vec3 input_num;
-			sscanf_s(line.c_str(), "Kd %f %f %f", &input_num.x, sizeof(GLfloat), &input_num.y, sizeof(GLfloat), &input_num.z, sizeof(GLfloat));
+			sscanf_s(line.c_str(), "Kd %f %f %f", &input_num.x, &input_num.y, &input_num.z);
 			matrial_data_[mtl_id].diffuse = input_num;
 		}
 		else if (!std::strcmp(keyword, "Ka"))
 		{
 			glm::vec3 input_num;
-			sscanf_s(line.c_str(), "Kd %f %f %f", &input_num.x, sizeof(GLfloat), &input_num.y, sizeof(GLfloat), &input_num.z, sizeof(GLfloat));
+			sscanf_s(line.c_str(), "Kd %f %f %f", &input_num.x, &input_num.y, &input_num.z);
 			matrial_data_[mtl_id].diffuse = input_num;
 		}
 		else if (!std::strcmp(keyword, "Ks"))
 		{
 			glm::vec3 input_num;
-			sscanf_s(line.c_str(), "Kd %f %f %f", &input_num.x, sizeof(GLfloat), &input_num.y, sizeof(GLfloat), &input_num.z, sizeof(GLfloat));
+			sscanf_s(line.c_str(), "Kd %f %f %f", &input_num.x, &input_num.y, &input_num.z);
 			matrial_data_[mtl_id].diffuse = input_num;
 		}
-
 	}
+	file.close();
 
-
-	return GLboolean();
+	return true;
 }
