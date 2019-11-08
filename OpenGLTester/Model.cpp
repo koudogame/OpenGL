@@ -46,7 +46,7 @@ void Model::updata()
 	glUseProgram(program_);
 
 	for (int i = 0; i < 3; ++i)
-		obb_.direction[i] = position[i];
+		obb_.direction[i] = glm::transpose(position)[i];
 
 	glm::mat4 view = Camera::Get()->getView();
 	glm::mat4 view_model(view * position);
