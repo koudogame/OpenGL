@@ -19,6 +19,7 @@ public:
 	bool init(std::string ModelName, std::string TextureName = "");
 	void setPosition(const glm::mat4& Position);
 	void draw();
+	const OBB& getOBB() { return obb_; }
 
 private:
 	std::unique_ptr<Object> object_;

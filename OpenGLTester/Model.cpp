@@ -42,6 +42,7 @@ void Model::setPosition(const glm::mat4 & Position)
 	position_ = Position;
 	for (int i = 0; i < 3; ++i)
 		obb_.direction[i] = glm::transpose(Position)[i];
+	obb_.position = Position[3];
 }
 
 void Model::SendSheder()
