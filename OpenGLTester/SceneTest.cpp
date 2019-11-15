@@ -20,19 +20,20 @@ SceneTest::~SceneTest()
 
 bool SceneTest::init()
 {
-	if (!model_.init("Dice.obj", "Wood.png"))
+	if (!model_.init("Resourse/Capsule.obj", "Resourse/Wood.png"))
 		return false;
-	if (!target_.init("Dice.obj", "Wood.png"))
+	if (!target_.init("Resourse/Capsule.obj", "Resourse/Wood.png"))
 		return false;
 	position_ = glm::vec3(5.0F, 0.0F, 5.0F);
 
 	rotate_.x = 0.0F;
 	rotate_.y = 0.0F;
+	length_ = 0.0F;
 
 	setCamPosition();
 
 	target_.setPosition(glm::translate(position_));
-	model_.setPosition(glm::mat4(1.0F));
+	model_.setPosition(glm::translate(glm::vec3(0.0F, 0.0F, 0.0F)));
 	return true;
 }
 
@@ -47,7 +48,7 @@ void SceneTest::setCamPosition()
 		turn3[i] = glm::transpose(turn4)[i];
 
 	//XŽ²‰ñ“]
-	cam_position_ = position_ + turn3 * kOffset;
+	cam_position_ = position_ + turn3 * glm::vec3(0.0F, 0.0F, length_);
 
 	Camera::Get()->editViewEye(cam_position_);
 }
@@ -68,10 +69,22 @@ SceneBase * SceneTest::update()
 	position_.x += input_vol.x * kSpeed;
 	position_.z += input_vol.y * kSpeed;
 
-	target_.setPosition(glm::translate(position_));
+	if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
+		position_.y += kSpeed;
+	else if(state.buttons[GLFW_GAMEPAD_BUTTON_B])
+		position_.y -= kSpeed;
+
+	if (state.buttons[GLFW_GAMEPAD_BUTTON_Y])
+		length_ += kSpeed;
+	else if(state.buttons[GLFW_GAMEPAD_BUTTON_X])
+		length_ -= kSpeed;
+
+	static float angle = 45.0F;
+
+	target_.setPosition(glm::translate(position_) * glm::rotate(glm::radians(angle), glm::vec3(0.0F, 0.0F, 1.0F)));;
 
 
-	if (Collision::get()->OBBtoOBB(target_.getOBB(), model_.getOBB()))
+	if (Collision::get()->CapsuletoCapsule(target_.getOBB(), model_.getOBB()))
 		int a = 0;
 
 	return this;

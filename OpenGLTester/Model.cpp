@@ -20,7 +20,6 @@ bool Model::init(std::string ModelName, std::string TextureName)
 	object_ = std::make_unique<Object>();
 	if (object_.get() == nullptr || !object_->createVertexData(ModelName))
 		return false;
-	obb_.length = object_.get()->getMaxLength();
 	if (TextureName != "")
 		object_->loadTexture(TextureName);
 	textrue_location_ = getUniformLocation("tex");
@@ -34,15 +33,16 @@ bool Model::init(std::string ModelName, std::string TextureName)
 		nomal_location_ < 0)
 		return false;
 
+	obb_.radius = 1.0F;
+
 	return true;
 }
 
 void Model::setPosition(const glm::mat4 & Position)
 {
 	position_ = Position;
-	for (int i = 0; i < 3; ++i)
-		obb_.direction[i] = glm::transpose(Position)[i];
-	obb_.position = Position[3];
+	obb_.line.start = (Position * glm::translate(glm::vec3(0.0F, 1.0F, 0.0F)))[3];
+	obb_.line.end = (Position * glm::translate(glm::vec3(0.0F, -1.0F, 0.0F)))[3];
 }
 
 void Model::SendSheder()

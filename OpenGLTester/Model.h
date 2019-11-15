@@ -1,13 +1,6 @@
 #pragma once
 #include "Object.h"
-
-struct OBB
-{
-	glm::vec3 position = glm::vec3(0.0);//行列の座標成分
-
-	glm::vec3 direction[3] = {};	//各オブジェクトが持つworld行列の回転成分
-	glm::vec3 length = glm::vec3(0.0);
-};
+#include "Shape.h"
 
 class Model
 {
@@ -19,7 +12,7 @@ public:
 	bool init(std::string ModelName, std::string TextureName = "");
 	void setPosition(const glm::mat4& Position);
 	void draw();
-	const OBB& getOBB() { return obb_; }
+	const Capsule& getOBB() { return obb_; }
 
 private:
 	std::unique_ptr<Object> object_;
@@ -30,7 +23,7 @@ private:
 	GLuint projection_location_;
 	GLuint nomal_location_;
 
-	OBB obb_;
+	Capsule obb_;
 	glm::mat4 position_;
 
 private:
