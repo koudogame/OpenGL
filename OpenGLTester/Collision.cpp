@@ -13,6 +13,7 @@ Collision::~Collision()
 {
 }
 
+//分離境界軸判定
 bool Collision::OBBtoOBB(const OBB & Obj1, const OBB & Obj2)
 {
 	//OBBの中心間のベクトル
@@ -82,6 +83,7 @@ bool Collision::OBBtoOBB(const OBB & Obj1, const OBB & Obj2)
 	return true;
 }
 
+//球同士の判定
 bool Collision::SpheretoSphere(const Sphere & Obj1, const Sphere & Obj2)
 {
 	//重心の距離を求める
@@ -92,6 +94,7 @@ bool Collision::SpheretoSphere(const Sphere & Obj1, const Sphere & Obj2)
 	return false;
 }
 
+//BOX同士の判定
 bool Collision::AABBtoAABB(const AABB & Obj1, const AABB & Obj2)
 {
 	//2Dの箱と箱の判定を次元数分行う
@@ -114,6 +117,7 @@ bool Collision::AABBtoAABB(const AABB & Obj1, const AABB & Obj2)
 	return true;
 }
 
+//カプセル同士の判定( 衝突判定点破棄 )
 bool Collision::CapsuletoCapsule(const Capsule & Obj1, const Capsule & Obj2)
 {
 	glm::vec3 p[2];
@@ -124,6 +128,7 @@ bool Collision::CapsuletoCapsule(const Capsule & Obj1, const Capsule & Obj2)
 	return false;
 }
 
+//カプセル同士の判定( 衝突判定点保持 )
 bool Collision::CapsuletoCapsule(const Capsule & Obj1, const Capsule & Obj2, glm::vec3 & Perpendicular1, glm::vec3 & Perpendicular2, float& Coefficient1, float& Coefficient2)
 {
 	float length = lengthSegmenttoSegment(Obj1.line, Obj2.line, Perpendicular1, Perpendicular2, Coefficient1, Coefficient2);
@@ -132,28 +137,105 @@ bool Collision::CapsuletoCapsule(const Capsule & Obj1, const Capsule & Obj2, glm
 	return false;
 }
 
-bool Collision::RaytoPlane(const Line & Segment, const glm::vec3 & Nomal, const glm::vec3 & NomalPoint)
+//レイと平面
+bool Collision::RaytoPlane(const Line & Segment, const Plane& Plane)
 {
-	if (glm::dot(Segment.start - NomalPoint, Nomal) * glm::dot(Segment.end - NomalPoint, Nomal) <= 0.0F)
+	if (glm::dot(Segment.start - Plane.c_ground, Plane.nomal) * glm::dot(Segment.end - Plane.c_ground, Plane.nomal) <= 0.0F)
 		return true;
 	return false;
 }
 
-bool Collision::LinetoPlane(const Line & Segment, glm::vec3 PlanePoint, glm::vec3 Nomal)
+//点とポリゴン
+bool Collision::PointtoPoligon(glm::vec3 Point, const Poligon& Poligon)
+{
+	glm::vec3 vector[3] =
+	{ Poligon.point[1] - Poligon.point[0],
+	Poligon.point[2] - Poligon.point[1],
+	Poligon.point[0] - Poligon.point[2] };
+
+	for (int i = 0; i < 3; ++i)
+	{
+		glm::vec3 check = glm::normalize(glm::cross(vector[0], Point - Poligon.point[0]));
+		if (glm::abs(check.x - Poligon.nomal.x) > kConsiderZero&&
+			glm::abs(check.y - Poligon.nomal.y) > kConsiderZero&&
+			glm::abs(check.z - Poligon.nomal.z) > kConsiderZero)
+			return false;
+	}
+
+	return true;
+}
+
+//線と平面の衝突判定位置
+glm::vec3 Collision::intersectionLinetoPlane(const Line& Line, const Plane& Plane)
+{
+	float d1, d2;
+	//平面までの距離
+	d1 = lengthPointtoPlane(Line.start, Plane);
+	d2 = lengthPointtoPlane(Line.end, Plane);
+	//交点までの係数
+	float a = d1 / (d1 + d2);
+	//交点
+	glm::vec3 intersection = Line.start + a * Line.getDirection();
+	return intersection;
+}
+
+//OBBと平面の判定
+bool Collision::OBBtoPlane(const OBB & Obj1, const Plane & Plane,float* RepelAmount)
+{
+	//平面の法線に対するOBBの射影線の長さ
+	float obb_radius = 0.0F;
+	//X軸成分
+	obb_radius += glm::abs(glm::dot(Plane.nomal, Obj1.direction[0] * Obj1.length.x));
+	//Y成分
+	obb_radius += glm::abs(glm::dot(Plane.nomal, Obj1.direction[1] * Obj1.length.y));
+	//Z成分
+	obb_radius += glm::abs(glm::dot(Plane.nomal, Obj1.direction[2] * Obj1.length.z));
+
+	//平面とOBBの距離
+	float length = glm::dot(Plane.nomal, Plane.c_ground - Obj1.c_gravity);
+
+	//戻し量を返却
+	if (RepelAmount != nullptr)
+		if (length > 0.0F)
+			*RepelAmount = obb_radius - glm::abs(length);
+		else
+			*RepelAmount = obb_radius + glm::abs(length);
+
+	if (glm::abs(length) - obb_radius < 0.0F)
+		return true;
+
+	return false;
+}
+
+//OBBとAABBの判定
+bool Collision::OBBtoAABB(const OBB & Obj1, const AABB & Obj2)
+{
+	//AABBをOBBに変換
+	OBB obb;
+	obb.c_gravity = (Obj2.max - Obj2.min) * 0.5F;
+	obb.length = Obj2.max - obb.c_gravity;
+	for (int i = 0; i < 3; ++i)
+		obb.direction[i] = glm::mat4(0.0F)[i];
+	return OBBtoOBB(Obj1,obb);
+}
+
+//レイと平面
+bool Collision::LinetoPlane(const Line & Segment,const Plane& Plane)
 {
 	//線分が平面上に存在する
-	if (glm::dot(Segment.start - PlanePoint, Nomal) < kConsiderZero)
+	if (glm::dot(Segment.start - Plane.c_ground, Plane.nomal) < kConsiderZero)
 		return true;
 	//平面の法線と線分が垂直に交わらない( 平面と平行ではない )
-	if (glm::dot(Segment.end - Segment.start, Nomal) > kConsiderZero)
+	if (glm::dot(Segment.getDirection(), Plane.nomal) > kConsiderZero)
 		return true;
 	return false;
 }
 
+//直線と直線の最短距離
 float Collision::lengthLinetoLine(const Line & Line1, const Line & Line2, glm::vec3 & PBuffer1, glm::vec3 & PBuffer2, float & CBuffer1, float & CBuffer2)
 {
 	//平行判定
-	if (glm::length(glm::cross(Line1.end - Line1.start, Line2.end - Line2.start)) < kConsiderZero)
+	if (glm::length(glm::cross(Line1.getDirection(), Line2.getDirection())) < kConsiderZero)
 	{
 		float length = lengthPointtoLine(Line1.start, Line2, PBuffer2, CBuffer2);
 		PBuffer1 = Line1.start;
@@ -162,42 +244,57 @@ float Collision::lengthLinetoLine(const Line & Line1, const Line & Line2, glm::v
 	}
 
 	//ねじれの位置関係
-	float dot_line12 = glm::dot(Line1.end - Line1.start, Line2.end - Line2.start);
-	float lengthsq_line1 = glm::dot(Line1.end - Line1.start, Line1.end - Line1.start);;
-	float lengthsq_line2 = glm::dot(Line2.end - Line2.start, Line2.end - Line2.start);;
+	float dot_line12 = glm::dot(Line1.getDirection(), Line2.getDirection());
+	float lengthsq_line1 = glm::dot(Line1.getDirection(), Line2.getDirection());
+	float lengthsq_line2 = glm::dot(Line2.getDirection(), Line2.getDirection());
 	glm::vec3 vec_line12 = Line1.start - Line2.start;
-	CBuffer1 = (dot_line12 * glm::dot(Line2.end - Line2.start, vec_line12) - lengthsq_line2 * glm::dot(Line1.end - Line1.start, vec_line12)) /
+	CBuffer1 = (dot_line12 * glm::dot(Line2.getDirection(), vec_line12) - lengthsq_line2 * glm::dot(Line1.getDirection(), vec_line12)) /
 		(lengthsq_line1 * lengthsq_line2 - dot_line12 * dot_line12);
-	PBuffer1 = Line1.start + CBuffer1 * (Line1.end - Line1.start);
-	CBuffer2 = glm::dot(Line2.end - Line2.start, PBuffer1 - Line2.start) / lengthsq_line2;
-	PBuffer2 = Line2.start + CBuffer2 * (Line2.end - Line2.start);
+	PBuffer1 = Line1.start + CBuffer1 * (Line1.getDirection());
+	CBuffer2 = glm::dot(Line2.getDirection(), PBuffer1 - Line2.start) / lengthsq_line2;
+	PBuffer2 = Line2.start + CBuffer2 * Line2.getDirection();
 
 	return glm::length(PBuffer2 - PBuffer1);
 }
 
-float Collision::lengthPointtoPlane(const glm::vec3 Point, glm::vec3 Nomal,glm::vec3 NomalPoint)
+//点から平面の距離
+float Collision::lengthPointtoPlane(const glm::vec3 Point,const Plane& Plane)
 {
-	float length = std::abs(glm::dot(Nomal, Point - NomalPoint)) / glm::length(Nomal);
+	float length = std::abs(glm::dot(Plane.nomal, Point - Plane.c_ground)) / glm::length(Plane.nomal);
 	return length;
 }
 
+//点からOBBの最短距離
+float Collision::lengthPointoOBB(const glm::vec3 & Point, const OBB & Obj)
+{
+	return 0.0f;
+}
+
+//点からAABBの最短距離
+float Collision::lengthPointoAABB(const glm::vec3 & Point, const AABB & Obj)
+{
+	return 0.0f;
+}
+
+//分離境界軸の作成
 float Collision::lenSegOnSparateAxis(glm::vec3 * Sep, glm::vec3 * E1, glm::vec3 * E2, glm::vec3 * E3)
 {
 	//分離境界線軸の長さを計算
 	GLfloat r1 = glm::abs(glm::dot(*Sep, *E1));
 	GLfloat r2 = glm::abs(glm::dot(*Sep, *E2));
-	GLfloat r3 = E3 ? glm::abs(glm::dot(*Sep, *E3)) : 0;
+	GLfloat r3 = E3 != nullptr ? glm::abs(glm::dot(*Sep, *E3)) : 0;
 	return r1 + r2 + r3;
 }
 
+//レイとレイの最短距離
 float Collision::lengthSegmenttoSegment(const Line & Segment1, const Line & Segment2, glm::vec3 & PBuffer1, glm::vec3 & PBuffer2, float & CBuffer1, float & CBuffer2)
 {
 	float length = 0.0F;
 
 	//線分の始点と終点がほぼほぼ一致している場合
-	if (glm::dot(Segment1.end - Segment1.start, Segment1.end - Segment1.start) < kConsiderZero)
+	if (glm::dot(Segment1.getDirection(), Segment1.getDirection()) < kConsiderZero)
 	{
-		if (glm::dot(Segment2.end - Segment2.start, Segment2.end - Segment2.start) < kConsiderZero)
+		if (glm::dot(Segment2.getDirection(), Segment2.getDirection()) < kConsiderZero)
 		{
 			length = glm::length(Segment2.start - Segment1.start);
 			PBuffer1 = Segment1.start;
@@ -213,7 +310,7 @@ float Collision::lengthSegmenttoSegment(const Line & Segment1, const Line & Segm
 			return length;
 		}
 	}
-	else if (glm::dot(Segment2.end - Segment2.start, Segment2.end - Segment2.start) < kConsiderZero)
+	else if (glm::dot(Segment2.getDirection(), Segment2.getDirection()) < kConsiderZero)
 	{
 		length = lengthPointtoLine(Segment2.start, Segment1, PBuffer1, CBuffer1);
 		PBuffer2 = Segment2.start;
@@ -222,7 +319,7 @@ float Collision::lengthSegmenttoSegment(const Line & Segment1, const Line & Segm
 	}
 
 	//平行判定
-	if (glm::length(glm::cross(Segment1.end - Segment1.start, Segment2.end - Segment2.start)) == 0.0F)
+	if (glm::length(glm::cross(Segment1.getDirection(), Segment2.getDirection())) <= kConsiderZero)
 	{
 		length = glm::min(lengthPointtoLine(Segment1.start, Segment2, PBuffer2, CBuffer2), lengthPointtoLine(Segment2.start, Segment1, PBuffer1, CBuffer1));
 		return length;
@@ -239,30 +336,31 @@ float Collision::lengthSegmenttoSegment(const Line & Segment1, const Line & Segm
 	//垂線の足が線分の外側に存在
 	//Segment1側のCBufferを0~1にクランプして垂線を降ろす
 	CBuffer1 = glm::clamp(CBuffer1, 0.0F, 1.0F);
-	PBuffer1 = Segment1.start + CBuffer1 * (Segment1.end - Segment1.start);
+	PBuffer1 = Segment1.start + CBuffer1 * (Segment1.getDirection());
 	length = lengthPointtoLine(PBuffer1, Segment2, PBuffer2, CBuffer2);
 	if (CBuffer2 >= 0.0F && CBuffer2 <= 1.0F)
 		return length;
 
 	//Swgment2側が外側だったのでSegment2をクランプ
 	CBuffer2 = glm::clamp(CBuffer2, 0.0F, 1.0F);
-	PBuffer2 = Segment2.start + CBuffer2 * (Segment2.end - Segment2.start);
+	PBuffer2 = Segment2.start + CBuffer2 * (Segment2.getDirection());
 	length = lengthPointtoLine(PBuffer2, Segment1, PBuffer1, CBuffer1);
 	if (CBuffer1 >= 0.0F && CBuffer1 <= 1.0F)
 		return length;
 
 	//双方の端点が最短距離
 	CBuffer1 = glm::clamp(CBuffer1, 0.0F, 1.0F);
-	PBuffer1 = Segment1.start + CBuffer1 * (Segment1.end - Segment1.start);
+	PBuffer1 = Segment1.start + CBuffer1 * (Segment1.getDirection());
 	return glm::length(PBuffer2 - PBuffer1);
 }
 
+//点と直線の距離
 float Collision::lengthPointtoLine(const glm::vec3 Point, const Line & Line, glm::vec3 & PBuffer, float & CBuffer)
 {
 	CBuffer = 0.0F;
-	glm::vec3 line = Line.end - Line.start;
-	if (glm::dot(line,line) > 0.0F)
-		CBuffer = glm::dot(line,  Point - Line.start) / glm::dot(line, line);
+	glm::vec3 line = Line.getDirection();
+	if (glm::dot(line, line) > 0.0F)
+		CBuffer = glm::dot(line, Point - Line.start) / glm::dot(line, line);
 
 	PBuffer = Line.start + CBuffer * line;
 	float length = glm::length(PBuffer - Point);
@@ -274,6 +372,7 @@ float Collision::lengthPointtoLine(const glm::vec3 Point, const Line & Line, glm
 	return length;
 }
 
+//鋭角判定
 bool Collision::sharpAngle(const glm::vec3 & Point1, glm::vec3 Point2, glm::vec3 Point3)
 {
 	glm::vec3 line[2] = { Point1 - Point2,

@@ -6,10 +6,15 @@ struct Shape
 {
 };
 
-struct Line
+struct Line:public Shape
 {
 	glm::vec3 start;
 	glm::vec3 end;
+
+	glm::vec3 getDirection()const
+	{
+		return end - start;
+	}
 };
 
 struct OBB : public Shape
@@ -36,10 +41,21 @@ struct AABB :public Shape
 {
 	glm::vec3 min;
 	glm::vec3 max;
+	AABB() = default;
+	AABB(const glm::vec3& Max,const glm::vec3& Min)
+	{
+		max = Max;
+		min = Min;
+	}
 };
 
 struct Plane :public Shape
 {
 	glm::vec3 c_ground;
 	glm::vec3 nomal;
+};
+
+struct Poligon :public Plane
+{
+	glm::vec3 point[3];
 };

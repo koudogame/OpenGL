@@ -150,6 +150,7 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="SceneTest.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Space.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
@@ -165,6 +166,7 @@
     <ClInclude Include="SceneTest.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Shape.h" />
+    <ClInclude Include="Space.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
