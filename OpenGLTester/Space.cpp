@@ -27,11 +27,12 @@ void Space::Redefinition(AABB Range)
 }
 
 //‹óŠÔ‚Ö“o˜^
-void Space::regist(AABB * Object)
+void Space::regist(Shape * Object)
 {
 	unregist(Object);
-
-	const int kBlock = toMoton(range_,Object->max, Object->min);
+	auto shape = dynamic_cast<Complex*>(Object);
+	AABB box = (shape == nullptr ? *dynamic_cast<AABB*>(Object) : shape->box);
+	const int kBlock = toMoton(range_,box.max, box.min);
 
 	if (kBlock == -1)
 		return;
@@ -41,7 +42,7 @@ void Space::regist(AABB * Object)
 }
 
 //‹óŠÔ‚Ö‚Ì“o˜^‰ðœ
-void Space::unregist(AABB * Object)
+void Space::unregist(Shape * Object)
 {
 	auto object = object_list_.find(Object);
 
@@ -62,8 +63,8 @@ void Space::collision()
 		{
 			//”»’èˆ—
 			for (auto& child_obj : itr.second)
-				for (auto& pearent_obj : space_[pearent])
-					Collision::get()->AABBtoAABB(*child_obj, *pearent_obj);
+				for (auto& pearent_obj : space_[pearent]);
+			//TODO:Collision‚ÌŽÀ‘•
 		}
 	}
 }

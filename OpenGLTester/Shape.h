@@ -4,9 +4,27 @@
 //		それぞれがCollisionを内包し、衝突判定を行う
 struct Shape
 {
+	virtual ~Shape() = default;
 };
 
-struct Line:public Shape
+struct AABB :public Shape
+{
+	glm::vec3 min;
+	glm::vec3 max;
+	AABB() = default;
+	AABB(const glm::vec3& Max, const glm::vec3& Min)
+	{
+		max = Max;
+		min = Min;
+	}
+};
+
+struct Complex :public Shape
+{
+	AABB box;
+};
+
+struct Line:public Complex
 {
 	glm::vec3 start;
 	glm::vec3 end;
@@ -17,7 +35,7 @@ struct Line:public Shape
 	}
 };
 
-struct OBB : public Shape
+struct OBB : public Complex
 {
 	glm::vec3 c_gravity = glm::vec3(0.0);//行列の座標成分
 
@@ -25,31 +43,19 @@ struct OBB : public Shape
 	glm::vec3 length = glm::vec3(0.0);
 };
 
-struct Sphere :public Shape
+struct Sphere :public Complex
 {
 	glm::vec3 c_gravity;
 	float radius;
 };
 
-struct Capsule : public Shape
+struct Capsule : public Complex
 {
 	Line line;
 	float radius;
 };
 
-struct AABB :public Shape
-{
-	glm::vec3 min;
-	glm::vec3 max;
-	AABB() = default;
-	AABB(const glm::vec3& Max,const glm::vec3& Min)
-	{
-		max = Max;
-		min = Min;
-	}
-};
-
-struct Plane :public Shape
+struct Plane :public Complex
 {
 	glm::vec3 c_ground;
 	glm::vec3 nomal;

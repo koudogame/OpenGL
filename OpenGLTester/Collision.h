@@ -22,7 +22,6 @@ public:
 	bool CapsuletoCapsule(const Capsule& Obj1, const Capsule& Obj2, glm::vec3& Perpendicular1, glm::vec3& Perpendicular2, float& Coefficient1, float& Coefficient2);
 
 	//TODO:衝突未確認
-
 	//レイと平面の判定
 	bool RaytoPlane(const Line& Segment,const Plane& Plane);
 	//点とポリゴンの判定

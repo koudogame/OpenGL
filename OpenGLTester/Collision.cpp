@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "Collision.h"
 
+template <typename T>
+T* changeClass(Shape* shape) { return dynamic_cast<T*>(shape); }
+
 const float kConsiderZero = 0.000001F;
 
 
@@ -47,7 +50,6 @@ bool Collision::OBBtoOBB(const OBB & Obj1, const OBB & Obj2)
 		}
 	}
 
-	glm::vec3 cross;
 	//êÇíºÇ»ï™ó£é≤
 	//AÇÃxyz
 	for (int i = 0; i < 3; ++i)
@@ -55,7 +57,7 @@ bool Collision::OBBtoOBB(const OBB & Obj1, const OBB & Obj2)
 		//BÇÃxyz
 		for (int k = 0; k < 3; ++k)
 		{
-			cross = glm::cross(direction_vector[0][0][i], direction_vector[0][1][k]);
+			glm::vec3 cross = glm::cross(direction_vector[0][0][i], direction_vector[0][1][k]);
 
 			glm::vec3 target[2][2];
 			for (int l = 0, count = 0; l < 3; ++l)

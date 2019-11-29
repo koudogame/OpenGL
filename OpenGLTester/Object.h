@@ -1,4 +1,5 @@
 #pragma once
+#include "Shape.h"
 
 struct VertexData
 {
@@ -42,7 +43,13 @@ private:
 	std::unordered_map<std::string, Matrial> matrial_data_;
 	glm::vec3 max_length_;
 
+	std::list<Shape*> shape_list_;
+
 private:
 	GLboolean loadObject(std::string ObjectName);
+
+protected:
+	void addShape(Shape* Shape) { shape_list_.push_back(Shape); }
+	void eraseShape(Shape* Shape);
 };
 

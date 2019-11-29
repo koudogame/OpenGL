@@ -198,6 +198,18 @@ GLboolean Object::loadObject(std::string ObjectName)
 	return true;
 }
 
+void Object::eraseShape(Shape * Shape)
+{
+	for (auto& itr : shape_list_)
+	{
+		if (itr == Shape)
+		{
+			shape_list_.erase(itr);
+			return;
+		}
+	}
+}
+
 
 GLboolean Object::createMatrialData(std::string ObjectMatrialName)
 {
