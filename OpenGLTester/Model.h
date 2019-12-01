@@ -8,23 +8,38 @@ public:
 	Model();
 	~Model();
 
+	//---プログラマ要実装関数---
 public:
-	bool init(std::string ModelName, std::string TextureName = "");
-	void setPosition(const glm::mat4& Position);
+	//当たり判定前の処理( 移動など )
+	virtual void firstUpdate() {}
+	//当たり判定後の処理( 補正など )
+	virtual void lastUpdate() {}
+
+	//---------------------------
+
+	//--要内部利用関数---
+protected:
+	bool readModel(std::string ModelName, std::string TextureName = "");
+protected:
+	std::vector<Shape> shape_;
+	glm::mat4 world_;
+
+	//-------------------
+
+
+public:
 	void draw();
-	const Capsule& getOBB() { return obb_; }
+	const std::vector<Shape>& getShape() { return shape_; }
 
 private:
 	std::unique_ptr<Object> object_;
 	GLuint program_;
 
+	//Shederへ渡すためのロケーター
 	GLuint textrue_location_;
 	GLuint view_model_location_;
 	GLuint projection_location_;
 	GLuint nomal_location_;
-
-	Capsule obb_;
-	glm::mat4 position_;
 
 private:
 	void SendSheder();

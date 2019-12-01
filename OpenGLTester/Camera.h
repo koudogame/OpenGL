@@ -1,13 +1,8 @@
 #pragma once
 class Camera
 {
-private:
+public:
 	Camera();
-	Camera(const Camera&) = delete;
-	Camera& operator= (const Camera&) = delete;
-public:
-	inline static Camera* Get() { static Camera instance; return &instance; }
-public:
 	~Camera();
 
 public:

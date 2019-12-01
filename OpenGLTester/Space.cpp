@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Space.h"
 #include "Collision.h"
+#include "Model.h"
+#include "Shape.h"
 
 const int kDimention = 3;
 const int kDivideLevel = 3;		//空間分割レベル
@@ -8,8 +10,8 @@ const int kDivideNum = 8;		//分割数
 
 const AABB kRange = AABB(glm::vec3(60.0F), glm::vec3(-60.0F));
 
-int toMoton(const AABB& Range,const glm::vec3 Point);
-int toMoton(const AABB& Range,const glm::vec3 Max, glm::vec3 Min);
+int toMoton(const AABB& Range, const glm::vec3 Point);
+int toMoton(const AABB& Range, const glm::vec3 Max, glm::vec3 Min);
 int bitStepTo3D(GLbyte Num);
 
 Space::Space()
@@ -27,50 +29,60 @@ void Space::Redefinition(AABB Range)
 }
 
 //空間へ登録
-void Space::regist(Shape * Object)
+void Space::regist(Model * Object)
 {
 	unregist(Object);
-	auto shape = dynamic_cast<Complex*>(Object);
-	AABB box = (shape == nullptr ? *dynamic_cast<AABB*>(Object) : shape->box);
-	const int kBlock = toMoton(range_,box.max, box.min);
-
-	if (kBlock == -1)
-		return;
-
-	object_list_[Object] = kBlock;
-	space_[kBlock].push_back(Object);
-}
-
-//空間への登録解除
-void Space::unregist(Shape * Object)
-{
-	auto object = object_list_.find(Object);
-
-	if (object != object_list_.end())
+	for (auto& itr : Object->getShape())
 	{
-		space_[object->second].remove(Object);
-		object_list_.erase(object);
+		auto shape = dynamic_cast<const Complex*>(&itr);
+		AABB box = (shape == nullptr ? *dynamic_cast<const AABB*>(&itr) : shape->box);
+		int kBlock = toMoton(range_, box.max, box.min);
+
+		if (kBlock == -1)
+			return;
+		shape_list_[&itr] = kBlock;
+		space_[kBlock].push_back(std::make_pair(&itr, Object));
 	}
 }
 
-//オブジェクトの判定を行う
-void Space::collision()
+//空間への登録解除
+void Space::unregist(Model * Object)
 {
-	for (auto& itr : space_)
+	for (auto& shape : Object->getShape())
 	{
-		//ルート空間までの親と判定
-		for (int pearent = itr.first;; pearent >>= 3)
+		int moton = shape_list_[&shape];
+		for (auto itr = space_[moton].begin(), end = space_[moton].end();
+			itr != end;++itr)
 		{
-			//判定処理
-			for (auto& child_obj : itr.second)
-				for (auto& pearent_obj : space_[pearent]);
-			//TODO:Collisionの実装
+			if ((*itr) == std::pair<const Shape*, Model*>(&shape, Object))
+			{
+				itr = space_[moton].erase(itr);
+				if (space_[moton].size() == 0)
+					space_.erase(moton);
+				break;
+			}
 		}
+		shape_list_.erase(&shape);
+	}
+}
+
+//当たり判定ありのオブジェクトの検索
+void Space::serch(Shape * const Target, std::vector<Model*>& ExistListBuffer)
+{
+	//ルート空間までの親と判定
+	for (int pearent = shape_list_[Target];; pearent >>= 3)
+	{
+		for (auto& pearent_shape : space_[pearent])
+			if (Collision::get()->collision(Target, pearent_shape.first))
+				ExistListBuffer.push_back(pearent_shape.second);
+
+		if (pearent == 0)
+			break;
 	}
 }
 
 //指定頂点のモートン番号を算出
-int toMoton(const AABB& Range ,const glm::vec3 Point)
+int toMoton(const AABB& Range, const glm::vec3 Point)
 {
 	const int kLineNUm = static_cast<int>(std::pow(2, kDivideLevel));
 
@@ -87,10 +99,10 @@ int toMoton(const AABB& Range ,const glm::vec3 Point)
 int toMoton(const AABB& Range, const glm::vec3 Max, glm::vec3 Min)
 {
 	//範囲外オブジェクト
-	if (!Collision::get()->AABBtoAABB(Range,AABB(Max, Min)))
+	if (!Collision::get()->AABBtoAABB(Range, AABB(Max, Min)))
 		return -1;
 
-	const int kXorMoton = toMoton(Range,Max) ^ toMoton(Range,Min);
+	const int kXorMoton = toMoton(Range, Max) ^ toMoton(Range, Min);
 
 	//所属空間レベルを調べる
 	int level = kDivideLevel;
@@ -111,7 +123,7 @@ int toMoton(const AABB& Range, const glm::vec3 Max, glm::vec3 Min)
 
 	//空間へ登録
 	int block = (static_cast<int>(std::pow(kDivideNum, level)) - 1) / (kDivideNum - 1);
-	return block += toMoton(Range,Max) >> ((kDivideLevel - level) * 3);
+	return block += toMoton(Range, Max) >> ((kDivideLevel - level) * 3);
 }
 
 int bitStepTo3D(GLbyte Num)

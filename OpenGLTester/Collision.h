@@ -11,6 +11,7 @@ public:
 	~Collision();
 
 public:
+	bool collision(const Shape*, const Shape*) { return true; };
 	//•ª—£‹«ŠEŽ²”»’è
 	bool OBBtoOBB(const OBB& Obj1, const OBB& Obj2);
 	//‹…“¯Žm‚Ì”»’è

@@ -1,5 +1,8 @@
 #pragma once
 #include "Shape.h"
+
+class Model;
+
 class Space
 {
 	//singleton
@@ -15,13 +18,12 @@ public:
 
 public:
 	void Redefinition(AABB Range);
-	void regist(Shape* Object);
-	void unregist(Shape* Object);
-	void collision();
-	void serch(Shape* Target, std::vector<Object*>& ExistListBuffer);
+	void regist(Model* Object);
+	void unregist(Model* Object);
+	void serch(Shape* const Target, std::vector<Model*>& ExistListBuffer);
 
 private:
 	AABB range_;
-	std::unordered_map<int, std::list<Shape*>> space_;		//空間の番号とその空間に属しているオブジェクトのリスト
-	std::unordered_map<Shape*, int> object_list_;	//オブジェクトとそのオブジェクトが属している空間番号
+	std::unordered_map<int, std::list<std::pair<const Shape*,Model*>>> space_;		//空間の番号とその空間に属しているオブジェクトのリスト
+	std::unordered_map<const Shape*, int> shape_list_;
 };

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Loop.h"
-#include "SceneTest.h"
 
 Loop::Loop()
 {
@@ -13,7 +12,7 @@ Loop::~Loop()
 
 bool Loop::init()
 {
-	scene_ = std::make_unique<SceneTest>();
+	//scene_ = std::make_unique<>();
 	if (!scene_->init())
 		return false;
 	return true;
