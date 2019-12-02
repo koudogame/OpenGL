@@ -46,4 +46,3 @@ private:
 private:
 	GLboolean loadObject(std::string ObjectName);
 };
-

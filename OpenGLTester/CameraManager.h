@@ -12,9 +12,11 @@ public:
 	~CameraManager();
 
 public:
-	//false::V‹K¶¬
-	std::pair<bool,Camera*> getCamera(std::string CameraName);
+	//false‚Å“o˜^Ï‚İ‚Å“¯ˆê‚Ì–¼‘O‚ÌƒJƒƒ‰‚ª“o˜^‚³‚ê‚Ä‚¢‚é
+	bool regist(std::string CameraName, Camera const * CameraPtr);
+	//nullptr‚Å–¢“o˜^
+	 Camera const* getCamera(std::string CameraName)const;
 
 private:
-	std::unordered_map<std::string, Camera> camera_;
+	std::unordered_map<std::string,  Camera const *> camera_;
 };

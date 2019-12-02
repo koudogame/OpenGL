@@ -11,12 +11,21 @@ CameraManager::~CameraManager()
 {
 }
 
-std::pair<bool, Camera*> CameraManager::getCamera(std::string CameraName)
+bool CameraManager::regist(std::string CameraName,  Camera const * CameraPtr)
+{
+	auto find = camera_.find(CameraName);
+	if (find != camera_.end())
+		return false;
+	camera_[CameraName] = CameraPtr;
+	return true;
+}
+
+Camera const* CameraManager::getCamera(std::string CameraName)const
 {
 	auto itr = camera_.find(CameraName);
 
 	if (itr != camera_.end())
-		return std::make_pair(true, &camera_[CameraName]);
+		return camera_.at(CameraName);
 
-	return std::make_pair(false, &camera_[CameraName]);
+	return nullptr;
 }

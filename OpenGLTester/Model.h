@@ -28,7 +28,8 @@ protected:
 
 
 public:
-	void draw();
+	virtual void draw()final;
+	virtual void destroy() {};
 	const std::vector<Shape>& getShape() { return shape_; }
 
 private:

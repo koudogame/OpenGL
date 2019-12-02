@@ -37,7 +37,9 @@ bool Model::readModel(std::string ModelName, std::string TextureName)
 }
 void Model::SendSheder()
 {
-	auto camera = CameraManager::get()->getCamera("main").second;
+	auto camera = CameraManager::get()->getCamera("main");
+	if (camera == nullptr)
+		return;
 	glUseProgram(program_);
 	glm::mat4 view_model = camera->getView() * world_;
 	//–@ü‚ğC³‚·‚é‚½‚ß‚Ì‹t“]’us—ñ‚Ìì¬

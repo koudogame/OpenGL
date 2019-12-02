@@ -6,8 +6,8 @@ public:
 	~Camera();
 
 public:
-	inline const glm::mat4& getProjection() {return projection_;}
-	inline const glm::mat4& getView() { return view_; }
+	inline const glm::mat4& getProjection()const {return projection_;}
+	inline const glm::mat4& getView()const { return view_; }
 	void setView(const glm::vec3& Eye, const glm::vec3& target, glm::vec3 up);
 	void setProjection(float ViewRadian, float Aspect, float Near, float Far);
 	void editViewEye(const glm::vec3& Eye);
