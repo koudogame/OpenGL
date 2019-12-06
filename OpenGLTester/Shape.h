@@ -1,67 +1,28 @@
 #pragma once
 
-//TODO:それぞれの形をクラス分け
-//		それぞれがCollisionを内包し、衝突判定を行う
-struct Shape
+class AABB;
+class OBB;
+class Segment;
+class Sphere;
+class Plane;
+class Poligon;
+
+class Shape
 {
+public:
 	virtual ~Shape() = default;
-};
 
-struct AABB :public Shape
-{
-	glm::vec3 min;
-	glm::vec3 max;
-	AABB() = default;
-	AABB(const glm::vec3& Max, const glm::vec3& Min)
-	{
-		max = Max;
-		min = Min;
-	}
-};
+public:
+	//Visitor
+	virtual bool collision(Shape* Owner) = 0;
 
-struct Complex :public Shape
-{
-	AABB box;
-};
+	//当たり判定の実際の処理を実装
+	virtual bool collision(AABB* Owner) = 0;
+	virtual bool collision(OBB* Owner) = 0;
+	virtual bool collision(Segment* Owner) = 0;
+	virtual bool collision(Sphere* Owner) = 0;
+	virtual bool collision(Plane* Owner) = 0;
+	virtual bool collision(Poligon* Owner) = 0;
 
-struct Line:public Complex
-{
-	glm::vec3 start;
-	glm::vec3 end;
-
-	glm::vec3 getDirection()const
-	{
-		return end - start;
-	}
-};
-
-struct OBB : public Complex
-{
-	glm::vec3 c_gravity = glm::vec3(0.0);//行列の座標成分
-
-	glm::vec3 direction[3] = {};	//各オブジェクトが持つworld行列の回転成分
-	glm::vec3 length = glm::vec3(0.0);
-};
-
-struct Sphere :public Complex
-{
-	glm::vec3 c_gravity;
-	float radius;
-};
-
-struct Capsule : public Complex
-{
-	Line line;
-	float radius;
-};
-
-struct Plane :public Complex
-{
-	glm::vec3 c_ground;
-	glm::vec3 nomal;
-};
-
-struct Poligon :public Plane
-{
-	glm::vec3 point[3];
+	virtual void setWorld(const glm::mat4& World) = 0;
 };

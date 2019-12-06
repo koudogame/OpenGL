@@ -14,6 +14,7 @@ public:
 public:
 	//false‚Å“o˜^Ï‚İ‚Å“¯ˆê‚Ì–¼‘O‚ÌƒJƒƒ‰‚ª“o˜^‚³‚ê‚Ä‚¢‚é
 	bool regist(std::string CameraName, Camera const * CameraPtr);
+	void unregist(Camera* CameraPtr);
 	//nullptr‚Å–¢“o˜^
 	 Camera const* getCamera(std::string CameraName)const;
 

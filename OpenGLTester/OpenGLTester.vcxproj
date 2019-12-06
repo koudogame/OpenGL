@@ -142,12 +142,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AABB.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraManager.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="Segment.cpp" />
     <ClCompile Include="Loop.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="OBB.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Space.cpp" />
@@ -155,21 +158,27 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TaskManger.cpp" />
+    <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AABB.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraManager.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="Segment.h" />
     <ClInclude Include="Loop.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="OBB.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="SceneBase.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Shape.h" />
+    <ClInclude Include="ShapeList.h" />
     <ClInclude Include="Space.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TaskManger.h" />
+    <ClInclude Include="TestScene.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>

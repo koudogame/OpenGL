@@ -2,13 +2,17 @@
 #include "Model.h"
 #include "Shader.h"
 #include "CameraManager.h"
+#include "TaskManger.h"
+#include "Space.h"
 
 Model::Model()
 {
+	TaskManager::get()->regist(this);
 }
 
 Model::~Model()
 {
+	TaskManager::get()->unregist(this);
 }
 
 
@@ -58,6 +62,14 @@ void Model::draw()
 	glUniform1i(textrue_location_, 0);
 
 	object_->draw();
+}
+
+void Model::moveShape()
+{
+	for (auto& itr : shape_)
+		itr.setWorld(world_);
+
+	Space::get()->regist(this);
 }
 
 GLuint Model::getUniformLocation(std::string VariableName)

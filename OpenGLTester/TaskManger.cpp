@@ -17,19 +17,12 @@ TaskManager::~TaskManager()
 
 void TaskManager::regist(Model* Obj)
 {
-	if (free_list_.empty())
-	{
-		active_list_.push_back(Obj);
-		return;
-	}
-
-	active_list_.splice(active_list_.begin(), free_list_, free_list_.begin());
-	active_list_.front() = Obj;
+	object_list_.push_back(Obj);
 }
 
 void TaskManager::unregist(Model* Obj)
 {
-	auto itr = active_list_.begin(),end = active_list_.end();
+	auto itr = object_list_.begin(),end = object_list_.end();
 
 	for (; itr != end; ++itr)
 	{
@@ -38,7 +31,7 @@ void TaskManager::unregist(Model* Obj)
 	}
 	if (itr == end)
 		return;
-	free_list_.splice(free_list_.begin(), active_list_, itr);
+	object_list_.erase(itr);
 }
 
 void TaskManager::update()
@@ -49,24 +42,24 @@ void TaskManager::update()
 
 void TaskManager::draw()
 {
-	for (auto& itr : active_list_)
+	for (auto& itr : object_list_)
 		itr->draw();
 }
 
 void TaskManager::firstUpdate()
 {
-	for (auto& itr : active_list_)
+	for (auto& itr : object_list_)
 		itr->firstUpdate();
 }
 
 void TaskManager::setShape()
 {
-	for (auto& itr : active_list_);
-	//TODO:shpae‚ÌXVˆ—
+	for (auto& itr : object_list_)
+		itr->moveShape();
 }
 
 void TaskManager::lastUpdate()
 {
-	for (auto& itr : active_list_)
+	for (auto& itr : object_list_)
 		itr->lastUpdate();
 }

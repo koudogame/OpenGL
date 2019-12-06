@@ -73,7 +73,7 @@ Object::~Object()
 	//頂点配列オブジェクトを削除する
 	glDeleteBuffers(1, &vao_);
 	//頂点バッファオブジェクトを削除する
-	glDeleteBuffers(1,&buffer_);
+	glDeleteBuffers(1, &buffer_);
 
 	//テクスチャの設定解除
 	glDisable(GL_TEXTURE_2D);
@@ -106,10 +106,12 @@ GLboolean Object::loadObject(std::string ObjectName)
 	std::vector<glm::vec2> uv;
 	std::vector<glm::vec3> nomal;
 	std::string mtl_id;
-	std::unordered_map<std::string,std::vector<std::string>> word;
-	max_length_ = glm::vec3(0.0F);
+	std::unordered_map<std::string, std::vector<std::string>> word;
 	if (file.fail())
 		return false;
+
+	//ポリゴンデータでの格納用変数
+	std::vector<std::array<std::string, 3>> poligon;
 
 	//データの読み込み
 	while (!file.eof())
@@ -117,19 +119,13 @@ GLboolean Object::loadObject(std::string ObjectName)
 		char keyword[_MAX_PATH] = {};
 		std::string line;
 		std::getline(file, line);
-		sscanf_s(line.c_str(), "%s ", keyword,sizeof(keyword));
+		sscanf_s(line.c_str(), "%s ", keyword, sizeof(keyword));
 
 		//決まったデータの読み込み
 		if (!std::strcmp(keyword, "v"))
 		{
 			glm::vec3 vector;
 			sscanf_s(line.c_str(), "v %f %f %f", &vector.x, &vector.y, &vector.z);
-			if (max_length_.x < vector.x)
-				max_length_.x = vector.x;
-			if (max_length_.y < vector.y)
-				max_length_.y = vector.y;
-			if (max_length_.z < vector.z)
-				max_length_.z = vector.z;
 			vertex.push_back(vector);
 		}
 		else if (!std::strcmp(keyword, "vt"))
@@ -156,10 +152,15 @@ GLboolean Object::loadObject(std::string ObjectName)
 			char block[3][_MAX_PATH] = {};
 
 			sscanf_s(line.c_str(), "f %s %s %s", &block[0], sizeof(block[0]), &block[1], sizeof(block[1]), &block[2], sizeof(block[2]));
-			for (auto& itr : block)
+
+			std::array<std::string, 3> poli;
+
+			for (int i = 0; i < 3; ++i)
 			{
-				word[mtl_id].push_back(itr);
+				word[mtl_id].push_back(block[i]);
+				poli[i] = block[i];
 			}
+			poligon.push_back(poli);
 		}
 	}
 
@@ -170,14 +171,14 @@ GLboolean Object::loadObject(std::string ObjectName)
 	GLuint index_num = 0;
 
 	//データの引き抜き関数
-	auto pull_data = [&](std::string PullData)->void{
-			GLuint data[3];
+	auto pull_data = [&](std::string PullData)->void {
+		GLuint data[3];
 
-			sscanf_s(PullData.c_str(), "%d/%d/%d", &data[0], &data[1], &data[2]);
-			vertex_data_.push_back(VertexData());
-			vertex_data_.back().position = vertex.at(data[0] - 1);
-			vertex_data_.back().texcode = uv.at(data[1] - 1);
-			vertex_data_.back().nomal = nomal.at(data[2] - 1);
+		sscanf_s(PullData.c_str(), "%d/%d/%d", &data[0], &data[1], &data[2]);
+		vertex_data_.push_back(VertexData());
+		vertex_data_.back().position = vertex.at(data[0] - 1);
+		vertex_data_.back().texcode = uv.at(data[1] - 1);
+		vertex_data_.back().nomal = nomal.at(data[2] - 1);
 	};
 
 	//index情報と対応の頂点情報に仕分ける
@@ -195,58 +196,5 @@ GLboolean Object::loadObject(std::string ObjectName)
 			index_data_[mtl.first].push_back(check->second);
 		}
 	}
-	return true;
-}
-
-
-GLboolean Object::createMatrialData(std::string ObjectMatrialName)
-{
-	std::ifstream file(ObjectMatrialName);
-
-	if (file.fail())
-	{
-		file.close();
-		return false;
-	}
-
-	std::string mtl_id;
-
-	//データの読み込み
-	while (!file.eof())
-	{
-		std::string line;
-		std::getline(file, line);
-
-		//キーワードの抜き出し
-		char keyword[_MAX_PATH] = {};
-		sscanf_s(line.c_str(), "%s", keyword, _MAX_PATH);
-
-		if (!std::strcmp(keyword, "newmtl"))
-		{
-			char str[_MAX_PATH] = {};
-			sscanf_s(line.c_str(), "newmtl %s", str, _MAX_PATH);
-			mtl_id = str;
-		}
-		else if (!std::strcmp(keyword, "Kd"))
-		{
-			glm::vec3 input_num;
-			sscanf_s(line.c_str(), "Kd %f %f %f", &input_num.x, &input_num.y, &input_num.z);
-			matrial_data_[mtl_id].diffuse = input_num;
-		}
-		else if (!std::strcmp(keyword, "Ka"))
-		{
-			glm::vec3 input_num;
-			sscanf_s(line.c_str(), "Kd %f %f %f", &input_num.x, &input_num.y, &input_num.z);
-			matrial_data_[mtl_id].diffuse = input_num;
-		}
-		else if (!std::strcmp(keyword, "Ks"))
-		{
-			glm::vec3 input_num;
-			sscanf_s(line.c_str(), "Kd %f %f %f", &input_num.x, &input_num.y, &input_num.z);
-			matrial_data_[mtl_id].diffuse = input_num;
-		}
-	}
-	file.close();
-
 	return true;
 }

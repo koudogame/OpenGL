@@ -20,6 +20,18 @@ bool CameraManager::regist(std::string CameraName,  Camera const * CameraPtr)
 	return true;
 }
 
+void CameraManager::unregist(Camera * CameraPtr)
+{
+	for (auto& itr : camera_)
+	{
+		if (itr.second == CameraPtr)
+		{
+			camera_.erase(itr.first);
+			return;
+		}
+	}
+}
+
 Camera const* CameraManager::getCamera(std::string CameraName)const
 {
 	auto itr = camera_.find(CameraName);

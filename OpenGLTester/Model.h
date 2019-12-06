@@ -31,6 +31,7 @@ public:
 	virtual void draw()final;
 	virtual void destroy() {};
 	const std::vector<Shape>& getShape() { return shape_; }
+	void moveShape();
 
 private:
 	std::unique_ptr<Object> object_;
