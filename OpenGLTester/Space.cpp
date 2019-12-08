@@ -2,7 +2,7 @@
 #include "Space.h"
 #include "Collision.h"
 #include "Model.h"
-#include "Shape.h"
+#include "ShapeList.h"
 
 const int kDimention = 3;
 const int kDivideLevel = 3;		//空間分割レベル
@@ -11,7 +11,7 @@ const int kDivideNum = 8;		//分割数
 const AABB kRange = AABB(glm::vec3(60.0F), glm::vec3(-60.0F));
 
 int toMoton(const AABB& Range, const glm::vec3 Point);
-int toMoton(const AABB& Range, const glm::vec3 Max, glm::vec3 Min);
+int toMoton(const AABB& Range, const glm::vec3 Max, const glm::vec3 Min);
 int bitStepTo3D(GLbyte Num);
 
 Space::Space()
@@ -34,9 +34,8 @@ void Space::regist(Model * Object)
 	unregist(Object);
 	for (auto& itr : Object->getShape())
 	{
-		auto shape = dynamic_cast<const Complex*>(&itr);
-		AABB box = (shape == nullptr ? *dynamic_cast<const AABB*>(&itr) : shape->box);
-		int kBlock = toMoton(range_, box.max, box.min);
+		const AABB* box = itr.getBox();
+		int kBlock = toMoton(range_, box->getMax(), box->getMin());
 
 		if (kBlock == -1)
 			return;
@@ -86,7 +85,7 @@ int toMoton(const AABB& Range, const glm::vec3 Point)
 {
 	const int kLineNUm = static_cast<int>(std::pow(2, kDivideLevel));
 
-	glm::vec3 range = Range.max - Range.min;
+	glm::vec3 range = Range.getMax() - Range.getMin();
 
 	//範囲内でのモートン番号を求める
 	const int kMotonX = static_cast<int>(Point.x / range.x);
@@ -96,7 +95,7 @@ int toMoton(const AABB& Range, const glm::vec3 Point)
 }
 
 //BOXの所属する空間のモートン番号を算出
-int toMoton(const AABB& Range, const glm::vec3 Max, glm::vec3 Min)
+int toMoton(const AABB& Range, const glm::vec3 Max, const glm::vec3 Min)
 {
 	//範囲外オブジェクト
 	if (!Collision::get()->AABBtoAABB(Range, AABB(Max, Min)))

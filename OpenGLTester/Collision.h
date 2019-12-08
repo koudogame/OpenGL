@@ -1,5 +1,7 @@
 #pragma once
 #include "Model.h"
+#include "ShapeList.h"
+
 class Collision
 {
 private:
@@ -25,11 +27,11 @@ public:
 
 	//TODO:衝突未確認
 	//レイと平面の判定
-	bool RaytoPlane(const Line& Segment,const Plane& Plane);
+	bool RaytoPlane(const Segment& Segment,const Plane& Plane);
 	//点とポリゴンの判定
 	bool PointtoPoligon(glm::vec3 Point,const Poligon& Poligon);
 	//直線と平面の交点
-	glm::vec3 intersectionLinetoPlane(const Line& Line,const Plane& Plane);
+	glm::vec3 intersectionLinetoPlane(const Segment& Line,const Plane& Plane);
 	//OBBと平面の判定
 	bool OBBtoPlane(const OBB& Obj1, const Plane& Plane, float* RepelAmount = nullptr);
 	//OBBとAABBの判定
@@ -39,16 +41,16 @@ private:
 	//分離境界線の長さを求める
 	float lenSegOnSparateAxis(glm::vec3 *n_ae1, glm::vec3 *be1, glm::vec3 *be2, glm::vec3 *be3 = nullptr);
 	//線分と線分の最短距離
-	float lengthSegmenttoSegment(const Line& Segment1, const Line& Segment2, glm::vec3& PerpendicularBuffer1, glm::vec3& PerpendicularBuffer2, float& CoefficientBuffer1, float& CoefficientBuffer2);
+	float lengthSegmenttoSegment(const Segment& Segment1, const Segment& Segment2, glm::vec3& PerpendicularBuffer1, glm::vec3& PerpendicularBuffer2, float& CoefficientBuffer1, float& CoefficientBuffer2);
 	//点から線分の最短距離
-	float lengthPointtoLine(const glm::vec3 Point, const Line& Segment,glm::vec3& PerpendicularBuffer,float& CoefficientBuffer);
+	float lengthPointtoLine(const glm::vec3 Point, const Segment& Segment,glm::vec3& PerpendicularBuffer,float& CoefficientBuffer);
 	//3点で形成される角度が鋭角かどうか
 	//始点：対象角：終点
 	bool sharpAngle(const glm::vec3& Point1, glm::vec3 Point2,glm::vec3 Point3);
 	//線分と平面判定
-	bool LinetoPlane(const Line& Segment,const Plane& Plane);
+	bool LinetoPlane(const Segment& Segment,const Plane& Plane);
 	//2直線間の最短距離
-	float lengthLinetoLine(const Line& Line1,const Line& Line2, glm::vec3& PerpendicularBuffer1, glm::vec3& PerpendicularBuffer2, float& CoefficientBuffer1, float& CoefficientBuffer2);
+	float lengthLinetoLine(const Segment& Line1,const Segment& Line2, glm::vec3& PerpendicularBuffer1, glm::vec3& PerpendicularBuffer2, float& CoefficientBuffer1, float& CoefficientBuffer2);
 	//点と平面の最短距離
 	float lengthPointtoPlane(const glm::vec3 Point,const Plane& Plane);
 	//点とOBB

@@ -42,11 +42,6 @@ bool Segment::collision(Sphere * Owner)
 	return false;
 }
 
-bool Segment::collision(Plane * Owner)
-{
-	return false;
-}
-
 bool Segment::collision(Poligon * Owner)
 {
 	return false;

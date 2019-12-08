@@ -38,11 +38,6 @@ bool AABB::collision(Sphere * Owner)
 	return false;
 }
 
-bool AABB::collision(Plane * Owner)
-{
-	return false;
-}
-
 bool AABB::collision(Poligon * Owner)
 {
 	return false;

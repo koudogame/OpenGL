@@ -45,9 +45,6 @@
     <ClCompile Include="Camera.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Collision.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Loop.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -66,11 +63,20 @@
     <ClCompile Include="AABB.cpp">
       <Filter>Shape\ソースファイル</Filter>
     </ClCompile>
-    <ClCompile Include="OBB.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Segment.cpp">
       <Filter>Shape\ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="OBB.cpp">
+      <Filter>Shape\ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Poligon.cpp">
+      <Filter>Shape\ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>Shape\ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -90,9 +96,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="SceneBase.h">
@@ -119,14 +122,23 @@
     <ClInclude Include="Shape.h">
       <Filter>Shape</Filter>
     </ClInclude>
-    <ClInclude Include="OBB.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="ShapeList.h">
       <Filter>Shape</Filter>
     </ClInclude>
     <ClInclude Include="Segment.h">
       <Filter>Shape\ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="OBB.h">
+      <Filter>Shape\ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Poligon.h">
+      <Filter>Shape\ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>Shape\ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

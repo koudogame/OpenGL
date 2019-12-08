@@ -14,7 +14,7 @@ OBB::~OBB()
 
 bool OBB::collision(Shape * Owner)
 {
-	return false;
+	return Owner->collision(this);
 }
 
 bool OBB::collision(AABB * Owner)
@@ -33,11 +33,6 @@ bool OBB::collision(Segment * Owner)
 }
 
 bool OBB::collision(Sphere * Owner)
-{
-	return false;
-}
-
-bool OBB::collision(Plane * Owner)
 {
 	return false;
 }

@@ -13,25 +13,25 @@ public:
 	~Segment();
 
 public:
-	//Visitor
+	//Double Dispatch
 	bool collision(Shape* Owner);
 
 	bool collision(AABB* Owner);
 	bool collision(OBB* Owner);
 	bool collision(Segment* Owner);
 	bool collision(Sphere* Owner);
-	bool collision(Plane* Owner);
 	bool collision(Poligon* Owner);
 
 	void setWorld(const glm::mat4& World);
+	inline const AABB* getBox()const { return &box_; }
 
 	//getter setter
 	inline void setStart(const glm::vec3& Start);
-	inline glm::vec3& getStart() {return start_};
+	inline const glm::vec3& getStart()const { return start_; };
 	inline void setRay(const glm::vec3& Ray);
-	inline const glm::vec3& getRay() { return ray_; };
+	inline const glm::vec3& getRay()const { return ray_; };
 	inline void setEnd(const glm::vec3& End);
-	inline glm::vec3 getEnd() { return start_ + ray_; };
+	inline glm::vec3 getEnd()const { return start_ + ray_; };
 
 private:
 	AABB box_;

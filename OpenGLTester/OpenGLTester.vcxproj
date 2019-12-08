@@ -145,7 +145,10 @@
     <ClCompile Include="AABB.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraManager.cpp" />
-    <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="Collision.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Poligon.cpp" />
     <ClCompile Include="Segment.cpp" />
     <ClCompile Include="Loop.cpp" />
     <ClCompile Include="main.cpp" />
@@ -154,6 +157,7 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Space.cpp" />
+    <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
@@ -165,7 +169,10 @@
     <ClInclude Include="AABB.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraManager.h" />
-    <ClInclude Include="Collision.h" />
+    <ClInclude Include="Collision.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Poligon.h" />
     <ClInclude Include="Segment.h" />
     <ClInclude Include="Loop.h" />
     <ClInclude Include="Model.h" />
@@ -176,6 +183,7 @@
     <ClInclude Include="Shape.h" />
     <ClInclude Include="ShapeList.h" />
     <ClInclude Include="Space.h" />
+    <ClInclude Include="Sphere.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TaskManger.h" />
     <ClInclude Include="TestScene.h" />

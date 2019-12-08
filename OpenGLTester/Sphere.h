@@ -2,12 +2,13 @@
 #include "Shape.h"
 #include "AABB.h"
 
-class OBB :
+class Sphere :
 	public Shape
 {
 public:
-	OBB();
-	~OBB();
+	Sphere();
+	Sphere(const glm::vec3& CenterPoint,float Radius);
+	~Sphere();
 
 public:
 	//Double Dispatch
@@ -24,13 +25,14 @@ public:
 	inline const AABB* getBox()const { return &box_; }
 
 	//setter getter
-	inline void setCenter(const glm::vec3& CenterPoint) { center_point_ = CenterPoint; }
-	inline const glm::vec3& getCenter()const { return center_point_; }
+	inline void setCenterPoint(const glm::vec3& CenterPoint) { center_point_ = CenterPoint; }
+	inline const glm::vec3& getCenterPoint()const { return center_point_; }
+	inline void setRadius(float Radius) { radius_ = Radius; }
+	inline const float getRadius()const { return radius_; }
 
 private:
 	AABB box_;
 	glm::vec3 center_point_;
-	glm::vec3 direction_[3];
-	glm::vec3 length_;
+	float radius_;
 };
 
