@@ -28,41 +28,59 @@ void Space::Redefinition(AABB Range)
 	range_ = Range;
 }
 
-//ãÛä‘Ç÷ìoò^
-void Space::regist(Model * Object)
+void Space::bindModel(Model * Object)
 {
-	unregist(Object);
-	for (auto& itr : Object->getShape())
-	{
-		const AABB* box = itr.getBox();
-		int kBlock = toMoton(range_, box->getMax(), box->getMin());
-
-		if (kBlock == -1)
-			return;
-		shape_list_[&itr] = kBlock;
-		space_[kBlock].push_back(std::make_pair(&itr, Object));
-	}
+	target_ = Object;
 }
 
-//ãÛä‘Ç÷ÇÃìoò^âèú
-void Space::unregist(Model * Object)
+//ãÛä‘Ç÷å`èÛÇÃìoò^
+void Space::addShape(Shape * Object)
 {
-	for (auto& shape : Object->getShape())
+	removeShape(Object);
+	const AABB* box = Object->getBox();
+	int kBlock = toMoton(range_, box->getMax(), box->getMin());
+
+	if (kBlock == -1)
+		return;
+	shape_list_[Object] = kBlock;
+	space_[kBlock].push_back(std::make_pair(Object, target_));
+}
+
+void Space::removeShape(Shape * Object)
+{
+	int moton = shape_list_[Object];
+	for (auto itr = space_[moton].begin(), end = space_[moton].end();
+		itr != end; ++itr)
 	{
-		int moton = shape_list_[&shape];
-		for (auto itr = space_[moton].begin(), end = space_[moton].end();
-			itr != end;++itr)
+		if ((*itr) == std::pair<const Shape*, Model*>(Object, target_))
 		{
-			if ((*itr) == std::pair<const Shape*, Model*>(&shape, Object))
+			itr = space_[moton].erase(itr);
+			if (space_[moton].size() == 0)
+				space_.erase(moton);
+			break;
+		}
+	}
+	shape_list_.erase(Object);
+}
+
+void Space::deleteModel(Model * Object)
+{
+	std::vector<int> erase_list;
+	for (auto& moton : space_)
+	{
+		for (auto itr = moton.second.begin(), end = moton.second.end(); itr != end; ++itr)
+		{
+			if (itr->second == Object)
 			{
-				itr = space_[moton].erase(itr);
-				if (space_[moton].size() == 0)
-					space_.erase(moton);
-				break;
+				itr = moton.second.erase(itr);
 			}
 		}
-		shape_list_.erase(&shape);
+		if (space_[moton.first].size() == 0)
+			erase_list.push_back(moton.first);
 	}
+
+	for (auto& itr : erase_list)
+		space_.erase(itr);
 }
 
 //ìñÇΩÇËîªíËÇ†ÇËÇÃÉIÉuÉWÉFÉNÉgÇÃåüçı

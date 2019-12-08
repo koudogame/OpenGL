@@ -66,10 +66,9 @@ void Model::draw()
 
 void Model::moveShape()
 {
+	Space::get()->bindModel(this);
 	for (auto& itr : shape_)
 		itr.setWorld(world_);
-
-	Space::get()->regist(this);
 }
 
 GLuint Model::getUniformLocation(std::string VariableName)

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Sphere.h"
-
+#include "ShapeList.h"
+#include "Space.h"
 
 Sphere::Sphere()
 {
@@ -49,4 +50,6 @@ bool Sphere::collision(Poligon * Owner)
 
 void Sphere::setWorld(const glm::mat4 & World)
 {
+	glm::vec4 center = World * glm::vec4(center_point_, 1.0F);
+	Space::get()->addShape(this);
 }
