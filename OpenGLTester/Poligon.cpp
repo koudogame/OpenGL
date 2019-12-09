@@ -49,6 +49,17 @@ bool Poligon::collision(Poligon * Owner)
 	return false;
 }
 
-void Poligon::setWorld(const glm::mat4 & World)
+const std::tuple<glm::vec3, glm::vec3, glm::vec3> Poligon::getPoint() const
 {
+	return std::tuple<glm::vec3, glm::vec3, glm::vec3>();
+}
+
+const glm::vec3 Poligon::getPoint(int PointNum) const
+{
+	return glm::vec3();
+}
+
+const glm::vec3 Poligon::getNomal() const
+{
+	return glm::vec3();
 }

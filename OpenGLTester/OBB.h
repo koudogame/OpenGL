@@ -19,18 +19,17 @@ public:
 	bool collision(Sphere* Owner);
 	bool collision(Poligon* Owner);
 
-	void setWorld(const glm::mat4& World);
-
 	inline const AABB* getBox()const { return &box_; }
 
 	//setter getter
-	inline void setCenter(const glm::vec3& CenterPoint) { center_point_ = CenterPoint; }
-	inline const glm::vec3& getCenter()const { return center_point_; }
-
+	inline void setLocal(const glm::mat4& Local) { local_ = Local; }
+	inline void setLength(const glm::vec3& Length) { length_ = Length; }
+	inline const glm::vec3& getLength()const { return length_; }
+	const glm::vec3 getCenterPoint();
+	const glm::vec3 getDirection(int DirectionID);
 private:
 	AABB box_;
-	glm::vec3 center_point_;
-	glm::vec3 direction_[3];
+	glm::mat4 local_;
 	glm::vec3 length_;
 };
 

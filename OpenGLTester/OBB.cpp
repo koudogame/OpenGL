@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "OBB.h"
 #include "ShapeList.h"
+#include "Collision.h"
 
 
 OBB::OBB()
@@ -19,12 +20,12 @@ bool OBB::collision(Shape * Owner)
 
 bool OBB::collision(AABB * Owner)
 {
-	return false;
+	return Collision::get()->OBBtoAABB(*this,*Owner);
 }
 
 bool OBB::collision(OBB * Owner)
 {
-	return false;
+	return Collision::get()->OBBtoOBB(*this, *Owner);
 }
 
 bool OBB::collision(Segment * Owner)
@@ -42,6 +43,12 @@ bool OBB::collision(Poligon * Owner)
 	return false;
 }
 
-void OBB::setWorld(const glm::mat4 & World)
+const glm::vec3 OBB::getCenterPoint()
 {
+	return glm::vec3();
+}
+
+const glm::vec3 OBB::getDirection(int DirectionID)
+{
+	return glm::vec3();
 }

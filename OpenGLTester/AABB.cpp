@@ -43,8 +43,12 @@ bool AABB::collision(Poligon * Owner)
 	return false;
 }
 
-void AABB::setWorld(const glm::mat4 & World)
+const glm::vec3 AABB::getMin() const
 {
-	min_ = World * glm::vec4(min_, 1.0F);
-	max_ = World * glm::vec4(max_, 1.0F);
+	return glm::vec3();
+}
+
+const glm::vec3 AABB::getMax() const
+{
+	return glm::vec3();
 }

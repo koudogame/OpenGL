@@ -47,12 +47,6 @@ bool Segment::collision(Poligon * Owner)
 	return false;
 }
 
-void Segment::setWorld(const glm::mat4 & World)
-{
-	start_ = World * glm::vec4(start_, 1.0F);
-	createAABB();
-}
-
 inline void Segment::setStart(const glm::vec3 & Start)
 {
 	start_ = Start;
@@ -70,6 +64,21 @@ inline void Segment::setEnd(const glm::vec3 & End)
 {
 	ray_ = End - start_;
 	createAABB();
+}
+
+const glm::vec3 Segment::getStart() const
+{
+	return glm::vec3();
+}
+
+const glm::vec3 Segment::getRay() const
+{
+	return glm::vec3();
+}
+
+glm::vec3 Segment::getEnd() const
+{
+	return glm::vec3();
 }
 
 void Segment::createAABB()
