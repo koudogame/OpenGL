@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "AABB.h"
 #include "ShapeList.h"
+#include "Collision.h"
 
 
 AABB::AABB(const glm::vec3 & Max, const glm::vec3 & Min)
@@ -20,12 +21,12 @@ bool AABB::collision(Shape * Owner)
 
 bool AABB::collision(AABB * Owner)
 {
-	return false;
+	return Collision::get()->AABBtoAABB(*this, *Owner);
 }
 
 bool AABB::collision(OBB * Owner)
 {
-	return false;
+	return Collision::get()->OBBtoAABB(*Owner, *this);
 }
 
 bool AABB::collision(Segment * Owner)
@@ -45,10 +46,10 @@ bool AABB::collision(Poligon * Owner)
 
 const glm::vec3 AABB::getMin() const
 {
-	return glm::vec3();
+	return world_ * glm::vec4(min_, 1.0F);
 }
 
 const glm::vec3 AABB::getMax() const
 {
-	return glm::vec3();
+	return world_ * glm::vec4(max_, 1.0F);
 }

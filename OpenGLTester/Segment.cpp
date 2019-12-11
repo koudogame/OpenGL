@@ -2,15 +2,10 @@
 #include "Segment.h"
 #include "ShapeList.h"
 
-Segment::Segment(const glm::vec3 Start)
+Segment::Segment(const glm::vec3 Start, const glm::vec3 & End)
 {
 	start_ = Start;
-}
-
-Segment::Segment(const glm::vec3 Start, const glm::vec3 & Ray)
-{
-	start_ = Start;
-	ray_ = Ray;
+	end_ = End;
 }
 
 Segment::~Segment()
@@ -47,51 +42,53 @@ bool Segment::collision(Poligon * Owner)
 	return false;
 }
 
+void Segment::setWorld(const glm::mat4 & World)
+{
+	world_ = World;
+	createBox();
+}
+
 inline void Segment::setStart(const glm::vec3 & Start)
 {
 	start_ = Start;
-	createAABB();
 }
 
 
 inline void Segment::setRay(const glm::vec3 & Ray)
 {
-	ray_ = Ray;
-	createAABB();
+	end_ = start_ + Ray;
 }
 
 inline void Segment::setEnd(const glm::vec3 & End)
 {
-	ray_ = End - start_;
-	createAABB();
+	end_ = End;
 }
 
 const glm::vec3 Segment::getStart() const
 {
-	return glm::vec3();
+	return world_ * glm::vec4(start_, 1.0F);
 }
 
 const glm::vec3 Segment::getRay() const
 {
-	return glm::vec3();
+	return getEnd() - getStart();
 }
 
 glm::vec3 Segment::getEnd() const
 {
-	return glm::vec3();
+	return world_ * glm::vec4(end_, 1.0F);
 }
 
-void Segment::createAABB()
+void Segment::createBox()
 {
-	glm::vec3 end = start_ + ray_;
 	glm::vec3 max, min;
 
-	max.x = std::max(start_.x, end.x);
-	max.y = std::max(start_.y, end.y);
-	max.z = std::max(start_.z, end.z);
-	min.x = std::min(start_.x, end.x);
-	min.y = std::min(start_.y, end.y);
-	min.z = std::min(start_.z, end.z);
+	max.x = std::max(getStart().x, getEnd().x);
+	max.y = std::max(getStart().y, getEnd().y);
+	max.z = std::max(getStart().z, getEnd().z);
+	min.x = std::min(getStart().x, getEnd().x);
+	min.y = std::min(getStart().y, getEnd().y);
+	min.z = std::min(getStart().z, getEnd().z);
 
 	box_.setMax(max);
 	box_.setMin(min);

@@ -22,7 +22,7 @@ public:
 	virtual bool collision(Sphere* Owner) = 0;
 	virtual bool collision(Poligon* Owner) = 0;
 
-	inline void setWorld(const glm::mat4& World) { world_ = World; }
+	virtual inline void setWorld(const glm::mat4& World) { world_ = World; }
 
 	virtual const AABB* getBox()const = 0;
 

@@ -5,11 +5,9 @@
 class Segment :
 	public Shape
 {
-	//****線分の設定は必ず始点から行うこと****
 public:
 	Segment() = default;
-	Segment(const glm::vec3 Start);
-	Segment(const glm::vec3 Start, const glm::vec3& Ray);
+	Segment(const glm::vec3 Start, const glm::vec3& End);
 	~Segment();
 
 public:
@@ -23,6 +21,7 @@ public:
 	bool collision(Poligon* Owner);
 
 	inline const AABB* getBox()const { return &box_; }
+	void setWorld(const glm::mat4& World);
 
 	//getter setter
 	inline void setStart(const glm::vec3& Start);
@@ -35,9 +34,9 @@ public:
 private:
 	AABB box_;
 	glm::vec3 start_;
-	glm::vec3 ray_;
+	glm::vec3 end_;
 
 private:
-	void createAABB();
+	void createBox();
 };
 

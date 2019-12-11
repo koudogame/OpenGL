@@ -43,12 +43,22 @@ bool OBB::collision(Poligon * Owner)
 	return false;
 }
 
-const glm::vec3 OBB::getCenterPoint()
+void OBB::setWorld(const glm::mat4 & World)
 {
-	return glm::vec3();
+	world_ = World;
+	createBox();
 }
 
-const glm::vec3 OBB::getDirection(int DirectionID)
+const glm::vec3 OBB::getCenter()const
 {
-	return glm::vec3();
+	return (world_ * local_)[3];
+}
+
+const glm::vec3 OBB::getDirection(int DirectionID)const
+{
+	return (world_ * local_)[DirectionID];
+}
+
+void OBB::createBox()
+{
 }

@@ -214,10 +214,9 @@ bool Collision::OBBtoAABB(const OBB & Obj1, const AABB & Obj2)
 {
 	//AABB‚ðOBB‚É•ÏŠ·
 	OBB obb;
-	obb.setCenter((Obj2.getMax() - Obj2.getMin()) * 0.5F);
+	glm::mat4 local(1.0F);
+	obb.setLocal(local);
 	obb.setLength(Obj2.getMax() - obb.getCenter());
-	for (int i = 0; i < 3; ++i)
-		obb.setDirection(i, glm::mat4(1.0F)[i]);
 	return OBBtoOBB(Obj1,obb);
 }
 
