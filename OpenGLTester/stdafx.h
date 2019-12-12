@@ -14,6 +14,7 @@
 #include <set>
 #include <array>
 #include <functional>
+#include <cassert>
 #include <cstdlib>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>

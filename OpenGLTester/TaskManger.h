@@ -1,5 +1,5 @@
 #pragma once
-class Model;
+#include "Model.h"
 
 class TaskManager
 {
@@ -14,16 +14,28 @@ public:
 	~TaskManager();
 
 public:
-	void regist(Model* Obj);
-	void unregist(Model* Obj);
+	template<typename T>
+	inline Model* addTask();
 	void update();
 	void draw();
+	void destroy();
+
 private:
-	std::list<Model*> object_list_;
+	//タスクオブジェクト管理用リスト
+	std::list<std::unique_ptr<Model>> object_list_;
+
+	//Update実行関数リスト
 	std::vector<std::function<void()>> update_list_;
 	void firstUpdate();
 	void setShape();
 	void lastUpdate();
+	void checkSurvival();
 };
 
-
+template<typename T>
+inline Model * TaskManager::addTask()
+{
+	object_list_.push_back(new T);
+	object_list_.back().get()->Initialization();
+	return object_list_.back().get();
+}

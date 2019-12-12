@@ -20,9 +20,11 @@ public:
 
 	inline const AABB* getBox()const { return this; }
 
+	void draw();
+
 	//getter setter
 	inline void setMin(const glm::vec3& Min) { min_ = Min; }
-	inline void setMax(const glm::vec3& Min) { min_ = Min; }
+	inline void setMax(const glm::vec3& Max) { max_ = Max; }
 	const glm::vec3 getMin()const;
 	const glm::vec3 getMax()const;
 

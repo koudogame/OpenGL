@@ -16,6 +16,7 @@ TestScene::~TestScene()
 
 bool TestScene::init()
 {
+	box_.init();
 	return true;
 }
 

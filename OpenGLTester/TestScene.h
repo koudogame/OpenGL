@@ -1,5 +1,6 @@
 #pragma once
 #include "SceneBase.h"
+#include "Box.h"
 class TestScene:public SceneBase
 {
 public:
@@ -11,5 +12,8 @@ public:
 	SceneBase* update();
 	void draw();
 	void destroy();
+
+private:
+	Box box_;
 };
 

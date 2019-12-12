@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Loop.h"
 #include "TestScene.h"
+#include "TaskManger.h"
 Loop::Loop()
 {
 }
@@ -20,6 +21,7 @@ bool Loop::init()
 
 bool Loop::update()
 {
+	TaskManager::get()->update();
 	auto temp = scene_->update();
 	if (temp == nullptr)
 		return false;
@@ -35,6 +37,7 @@ bool Loop::update()
 
 void Loop::draw()
 {
+	TaskManager::get()->draw();
 	scene_->draw();
 }
 

@@ -52,7 +52,7 @@ void Space::removeShape(Shape * Object)
 	for (auto itr = space_[moton].begin(), end = space_[moton].end();
 		itr != end; ++itr)
 	{
-		if ((*itr) == std::pair<const Shape*, Model*>(Object, target_))
+		if ((*itr) == std::pair<Shape*, Model*>(Object, target_))
 		{
 			itr = space_[moton].erase(itr);
 			if (space_[moton].size() == 0)
@@ -84,13 +84,13 @@ void Space::deleteModel(Model * Object)
 }
 
 //当たり判定ありのオブジェクトの検索
-void Space::serch(Shape * const Target, std::vector<Model*>& ExistListBuffer)
+void Space::serch(Shape * Target, std::vector<Model*>& ExistListBuffer)
 {
 	//ルート空間までの親と判定
 	for (int pearent = shape_list_[Target];; pearent >>= 3)
 	{
 		for (auto& pearent_shape : space_[pearent])
-			if (Collision::get()->collision(Target, pearent_shape.first))
+			if (Target->collision(pearent_shape.first))
 				ExistListBuffer.push_back(pearent_shape.second);
 
 		if (pearent == 0)

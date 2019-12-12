@@ -24,14 +24,6 @@ int main()
 	if (!window.init())
 		return 0;
 
-	glm::vec3 eye = { 2.0F,2.0F,100.0F };
-	glm::vec3 target = { 0.0F,0.0F,0.0F };
-	glm::vec3 up = { 0.0F,1.0F,0.0F };
-	Camera camera;
-	CameraManager::get()->regist("main", &camera);
-	camera.setView(eye, target, up);
-	camera.setProjection(glm::radians(30.0F), 1280.0F / 720.0F, 0.1F, 1000.0F);
-
 	Loop loop;
 	if (!loop.init())
 		return 0;

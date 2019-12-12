@@ -23,11 +23,11 @@ public:
 	void addShape(Shape* Object);
 	void removeShape(Shape* Object);
 	void deleteModel(Model* Object);
-	void serch(Shape* const Target, std::vector<Model*>& ExistListBuffer);
+	void serch(Shape* Target, std::vector<Model*>& ExistListBuffer);
 
 private:
 	Model* target_;
 	AABB range_;
-	std::unordered_map<int, std::list<std::pair<const Shape*,Model*>>> space_;		//空間の番号とその空間に属しているオブジェクトのリスト
-	std::unordered_map<const Shape*, int> shape_list_;
+	std::unordered_map<int, std::list<std::pair<Shape*,Model*>>> space_;		//空間の番号とその空間に属しているオブジェクトのリスト
+	std::unordered_map<Shape*, int> shape_list_;
 };

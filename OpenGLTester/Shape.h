@@ -26,6 +26,9 @@ public:
 
 	virtual const AABB* getBox()const = 0;
 
+	//デバッグ用
+	virtual void draw() {}
+
 protected:
 	glm::mat4 world_;
 };

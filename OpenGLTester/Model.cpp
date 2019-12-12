@@ -2,17 +2,15 @@
 #include "Model.h"
 #include "Shader.h"
 #include "CameraManager.h"
-#include "TaskManger.h"
 #include "Space.h"
 
 Model::Model()
 {
-	TaskManager::get()->regist(this);
+	alive_ = true;
 }
 
 Model::~Model()
 {
-	TaskManager::get()->unregist(this);
 }
 
 
@@ -41,7 +39,7 @@ bool Model::readModel(std::string ModelName, std::string TextureName)
 }
 void Model::SendSheder()
 {
-	auto camera = CameraManager::get()->getCamera("main");
+	auto camera = CameraManager::get()->getCamera(camera_name_);
 	if (camera == nullptr)
 		return;
 	glUseProgram(program_);
@@ -52,6 +50,11 @@ void Model::SendSheder()
 	glUniformMatrix4fv(view_model_location_, 1, GL_FALSE, &view_model[0][0]);
 	glUniformMatrix4fv(projection_location_, 1, GL_FALSE, &camera->getProjection()[0][0]);
 	glUniformMatrix3fv(nomal_location_, 1, GL_FALSE, &nomal_matrix[0][0]);
+}
+
+void Model::Initialization()
+{
+	alive_ = true;
 }
 
 void Model::draw()
