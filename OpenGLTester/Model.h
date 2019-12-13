@@ -1,6 +1,7 @@
 #pragma once
 #include "Object.h"
 #include "Shape.h"
+#include "ObjectManager.h"
 
 class Model
 {
@@ -15,7 +16,7 @@ public:
 	//ìñÇΩÇËîªíËå„ÇÃèàóù( ï‚ê≥Ç»Ç« )
 	virtual void lastUpdate() {}
 	//îjä¸
-	virtual void destroy() {};
+	virtual void destroy() { ObjectManager::get()->release(object_); };
 
 protected:
 	//èâä˙âª
@@ -29,7 +30,7 @@ protected:
 	inline void setUseCamName(std::string CameraName) { camera_name_ = CameraName; }
 	inline void death() { alive_ = false; }
 protected:
-	std::vector<Shape> shape_;
+	std::vector<Shape*> shape_;
 	glm::mat4 world_;
 
 	//-------------------
@@ -38,12 +39,12 @@ protected:
 public:
 	void Initialization();
 	virtual void draw()final;
-	const std::vector<Shape>& getShape() { return shape_; }
+	const std::vector<Shape*>& getShape() { return shape_; }
 	void moveShape();
 	bool isAlive() { return alive_; }
 
 private:
-	std::unique_ptr<Object> object_;
+	Object* object_;
 	GLuint program_;
 	std::string camera_name_;
 	bool alive_;

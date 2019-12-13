@@ -4,6 +4,7 @@
 
 Object::Object()
 {
+	reference_num_ = 0;
 }
 
 GLboolean Object::createVertexData(std::string ObjectName)

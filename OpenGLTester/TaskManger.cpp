@@ -14,6 +14,10 @@ TaskManager::TaskManager()
 
 TaskManager::~TaskManager()
 {
+	for (auto& itr : object_list_)
+		itr->destroy();
+	object_list_.clear();
+	update_list_.clear();
 }
 
 void TaskManager::update()

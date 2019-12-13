@@ -43,5 +43,6 @@ void Loop::draw()
 
 void Loop::destroy()
 {
+	TaskManager::get()->destroy();
 	scene_->destroy();
 }

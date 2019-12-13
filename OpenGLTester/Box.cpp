@@ -13,22 +13,30 @@ Box::~Box()
 
 bool Box::init()
 {
-	glm::vec3 eye = { 10.0F,10.0F,10.0F };
-	glm::vec3 target = { 0.0F,0.0F,0.0F };
-	glm::vec3 up = { 0.0F,1.0F,0.0F };
-	CameraManager::get()->regist("main", &camera_);
-	camera_.setView(eye, target, up);
-	camera_.setProjection(glm::radians(30.0F), 1280.0F / 720.0F, 0.1F, 1000.0F);
-
 	setUseCamName("main");
+	position_ = glm::vec3((rand() % 50)*0.1F, (rand() % 50)*0.1F, (rand() % 50)*0.1F);
+	rotate_ = glm::vec3((rand() % 2), (rand() % 2), (rand() % 2));
+	rotate_angle_ = 0.0F;
+
 	return readModel("Resourse/Dice.obj","Resourse/Wood.png");
 }
 
 void Box::firstUpdate()
 {
-	world_ = glm::mat4(1.0F);
+	world_ = glm::translate(position_);
+	world_ *= glm::rotate(glm::radians(rotate_angle_++), rotate_);
+
+	GLFWgamepadstate state;
+	glfwGetGamepadState(0, &state);
+	if (state.buttons[GLFW_GAMEPAD_BUTTON_B] == GLFW_PRESS &&
+		old_state_.buttons[GLFW_GAMEPAD_BUTTON_B] == GLFW_RELEASE)
+	{
+		death();
+	}
+	old_state_ = state;
 }
 
 void Box::destroy()
 {
+	Model::destroy();
 }

@@ -28,7 +28,8 @@ public:
 	GLboolean createVertexData(std::string ObjectName);
 	void loadTexture(const std::string &TextureName);
 	void draw()const;
-
+	int defRef() { return --reference_num_; }
+	void addRef() { ++reference_num_; }
 private:
 	GLuint vao_;
 	GLuint texture_id_;
@@ -37,6 +38,7 @@ private:
 	//’¸“_î•ñ
 	std::vector<VertexData> vertex_data_;
 	std::unordered_map<std::string,std::vector<GLuint>> index_data_;
+	int reference_num_;
 
 private:
 	GLboolean loadObject(std::string ObjectName);

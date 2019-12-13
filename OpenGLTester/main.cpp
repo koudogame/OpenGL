@@ -28,6 +28,14 @@ int main()
 	if (!loop.init())
 		return 0;
 
+	Camera camera;
+	glm::vec3 eye = { 10.0F,10.0F,10.0F };
+	glm::vec3 target = { 0.0F,0.0F,0.0F };
+	glm::vec3 up = { 0.0F,1.0F,0.0F };
+	CameraManager::get()->regist("main", &camera);
+	camera.setView(eye, target, up);
+	camera.setProjection(glm::radians(30.0F), 1280.0F / 720.0F, 0.1F, 1000.0F);
+
 	while (window.isCloseWindow())
 	{
 		window.clearWindow();

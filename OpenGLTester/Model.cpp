@@ -11,6 +11,7 @@ Model::Model()
 
 Model::~Model()
 {
+	ObjectManager::get()->release(object_);
 }
 
 
@@ -19,11 +20,9 @@ bool Model::readModel(std::string ModelName, std::string TextureName)
 	program_ = Shader::Get()->loadProgram("point.vert", "point.frag");
 	if (program_ == 0)
 		return false;
-	object_ = std::make_unique<Object>();
-	if (object_.get() == nullptr || !object_->createVertexData(ModelName))
+	object_ = ObjectManager::get()->getObject(ModelName, TextureName);
+	if (object_== nullptr)
 		return false;
-	if (TextureName != "")
-		object_->loadTexture(TextureName);
 	textrue_location_ = getUniformLocation("tex");
 	view_model_location_ = getUniformLocation("model_view");
 	projection_location_ = getUniformLocation("projection");
@@ -71,7 +70,7 @@ void Model::moveShape()
 {
 	Space::get()->bindModel(this);
 	for (auto& itr : shape_)
-		itr.setWorld(world_);
+		itr->setWorld(world_);
 }
 
 GLuint Model::getUniformLocation(std::string VariableName)

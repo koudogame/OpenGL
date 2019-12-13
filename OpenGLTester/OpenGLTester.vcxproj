@@ -149,6 +149,7 @@
     <ClCompile Include="Collision.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="Poligon.cpp" />
     <ClCompile Include="Segment.cpp" />
     <ClCompile Include="Loop.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="Collision.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Poligon.h" />
     <ClInclude Include="Segment.h" />
     <ClInclude Include="Loop.h" />

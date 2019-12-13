@@ -12,8 +12,5 @@ public:
 	SceneBase* update();
 	void draw();
 	void destroy();
-
-private:
-	Box box_;
 };
 

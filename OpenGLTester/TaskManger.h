@@ -1,6 +1,7 @@
 #pragma once
 #include "Model.h"
 
+
 class TaskManager
 {
 private:
@@ -15,7 +16,7 @@ public:
 
 public:
 	template<typename T>
-	inline Model* addTask();
+	inline Model* createTask();
 	void update();
 	void draw();
 	void destroy();
@@ -33,9 +34,9 @@ private:
 };
 
 template<typename T>
-inline Model * TaskManager::addTask()
+inline Model * TaskManager::createTask()
 {
-	object_list_.push_back(new T);
+	object_list_.push_back(std::make_unique<T>());
 	object_list_.back().get()->Initialization();
 	return object_list_.back().get();
 }
