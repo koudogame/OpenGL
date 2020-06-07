@@ -47,15 +47,18 @@ void ObjectManager::release(std::string ModelName)
 
 void ObjectManager::release(Object * Model)
 {
-	auto itr = object_.begin();
-	auto end = object_.end();
-	for (; itr != end; ++itr)
-		if (itr->second.get() == Model)
-			break;
-
-	if (itr == end)
+	if (object_.size() == 0)
 		return;
 
-	if (itr->second->defRef() <= 0)
-		object_.erase(itr->first);
+	for (auto& itr : object_)
+	{
+		if (itr.second.get() == Model)
+		{
+			if (itr.second->defRef() <= 0)
+			{
+				object_.erase(itr.first);
+				break;
+			}
+		}
+	}
 }

@@ -34,7 +34,7 @@ int main()
 	glm::vec3 up = { 0.0F,1.0F,0.0F };
 	CameraManager::get()->regist("main", &camera);
 	camera.setView(eye, target, up);
-	camera.setProjection(glm::radians(30.0F), 1280.0F / 720.0F, 0.1F, 1000.0F);
+	camera.setProjection(glm::radians(90.0F), 1280.0F / 720.0F, 0.1F, 1000.0F);
 
 	while (window.isCloseWindow())
 	{

@@ -18,7 +18,7 @@ bool Box::init()
 	rotate_ = glm::vec3((rand() % 2), (rand() % 2), (rand() % 2));
 	rotate_angle_ = 0.0F;
 
-	return readModel("Resourse/Dice.obj","Resourse/Wood.png");
+	return readModel("Resourse/box.obj","Resourse/Wood.png");
 }
 
 void Box::firstUpdate()
